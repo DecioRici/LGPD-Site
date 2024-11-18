@@ -1,79 +1,84 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Learn everything about the LGPD (Lei Geral de Proteção de Dados). Resources, FAQs, and expert guidance on data protection compliance.">
-  <title>LGPD Hub - Data Protection Made Simple</title>
+  <meta name="description" content="MR Privacidade Consultoria - Especialistas em LGPD e Proteção de Dados.">
+  <title>MR Privacidade Consultoria</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <header>
-    <nav class="navbar">
-      <a href="#" class="logo">LGPD Hub</a>
-      <ul class="nav-links">
-        <li><a href="#about">About LGPD</a></li>
-        <li><a href="#resources">Resources</a></li>
-        <li><a href="#faq">FAQs</a></li>
-        <li><a href="#contact">Contact</a></li>
-      </ul>
-    </nav>
+  <header class="navbar">
+    <div class="container">
+      <img src="logo.jpg" alt="Logo MR Privacidade Consultoria" class="logo">
+      <nav>
+        <ul class="nav-links">
+          <li><a href="#about">Sobre</a></li>
+          <li><a href="#services">Serviços</a></li>
+          <li><a href="#contact">Contato</a></li>
+        </ul>
+      </nav>
+    </div>
   </header>
 
   <main>
     <section id="hero">
-      <h1>Welcome to LGPD Hub</h1>
-      <p>Your go-to platform for understanding Brazil's Data Protection Law.</p>
-      <button onclick="scrollToSection('about')">Learn More</button>
-    </section>
-
-    <section id="about">
-      <h2>About the LGPD</h2>
-      <p>The LGPD is Brazil's comprehensive data protection regulation, ensuring transparency, security, and accountability in data management.</p>
-      <img src="lgpd-image.jpg" alt="Data Protection Image">
-    </section>
-
-    <section id="resources">
-      <h2>Resources</h2>
-      <ul>
-        <li><a href="lgpd-official.pdf" download>Download LGPD Official Text</a></li>
-        <li><a href="#comparison">GDPR vs. LGPD</a></li>
-      </ul>
-    </section>
-
-    <section id="faq">
-      <h2>FAQs</h2>
-      <div class="faq-item">
-        <h3>What is LGPD?</h3>
-        <p>LGPD stands for Lei Geral de Proteção de Dados, Brazil's data protection law.</p>
-      </div>
-      <div class="faq-item">
-        <h3>Who needs to comply?</h3>
-        <p>All businesses operating in Brazil or processing Brazilian residents' data.</p>
+      <div class="container">
+        <h1>Bem-vindo à MR Privacidade Consultoria</h1>
+        <p>Especialistas em adequação à LGPD e proteção de dados.</p>
+        <a href="#services" class="btn">Saiba Mais</a>
       </div>
     </section>
 
-    <section id="contact">
-      <h2>Contact Us</h2>
-      <form id="contactForm">
-        <input type="text" id="name" placeholder="Your Name" required>
-        <input type="email" id="email" placeholder="Your Email" required>
-        <textarea id="message" placeholder="Your Message"></textarea>
-        <button type="submit">Submit</button>
-      </form>
+    <section id="about" class="section">
+      <div class="container">
+        <h2>Sobre Nós</h2>
+        <p>Somos líderes em consultoria de proteção de dados, oferecendo serviços personalizados para garantir que sua empresa esteja em conformidade com a LGPD.</p>
+      </div>
+    </section>
+
+    <section id="services" class="section bg-light">
+      <div class="container">
+        <h2>Nossos Serviços</h2>
+        <div class="services-grid">
+          <div class="service-item">
+            <h3>Implementação da LGPD</h3>
+            <p>Garantimos que sua empresa esteja em conformidade com a Lei Geral de Proteção de Dados.</p>
+          </div>
+          <div class="service-item">
+            <h3>Treinamentos</h3>
+            <p>Capacite sua equipe para gerenciar dados com segurança e eficiência.</p>
+          </div>
+          <div class="service-item">
+            <h3>DPO as a Service</h3>
+            <p>Oferecemos serviços de Encarregado de Proteção de Dados terceirizado.</p>
+          </div>
+          <div class="service-item">
+            <h3>Auditorias</h3>
+            <p>Realizamos auditorias para monitorar e manter a conformidade contínua.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact" class="section">
+      <div class="container">
+        <h2>Fale Conosco</h2>
+        <form id="contact-form">
+          <input type="text" id="name" placeholder="Seu Nome" required>
+          <input type="email" id="email" placeholder="Seu Email" required>
+          <textarea id="message" placeholder="Sua Mensagem"></textarea>
+          <button type="submit" class="btn">Enviar</button>
+        </form>
+      </div>
     </section>
   </main>
 
   <footer>
-    <p>&copy; 2024 LGPD Hub. All rights reserved.</p>
+    <div class="container">
+      <p>&copy; 2024 MR Privacidade Consultoria. Todos os direitos reservados.</p>
+    </div>
   </footer>
-
   <script src="script.js"></script>
 </body>
 </html>
-<style>
-  body {
-    background-color: yellow;
-  }
-</style>
-
