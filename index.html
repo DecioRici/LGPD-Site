@@ -1,84 +1,90 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="MR Privacidade Consultoria - Especialistas em LGPD e Proteção de Dados.">
-  <title>MR Privacidade Consultoria</title>
+  <title>Face Manager Web</title>
   <link rel="stylesheet" href="styles.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #111;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    #app {
+      background: #222;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+      width: 100%;
+      max-width: 500px;
+    }
+    input, select {
+      display: block;
+      margin-bottom: 10px;
+      padding: 10px;
+      width: 100%;
+      border: none;
+      border-radius: 4px;
+    }
+    button {
+      padding: 10px 20px;
+      background-color: #28a745;
+      border: none;
+      border-radius: 4px;
+      color: white;
+      cursor: pointer;
+      margin-bottom: 10px;
+    }
+    button:hover {
+      background-color: #218838;
+    }
+    #status {
+      margin-top: 15px;
+      font-weight: bold;
+    }
+    hr {
+      margin: 20px 0;
+      border: 1px solid #444;
+    }
+  </style>
 </head>
 <body>
-  <header class="navbar">
-    <div class="container">
-      <img src="logo.jpg" alt="Logo MR Privacidade Consultoria" class="logo">
-      <nav>
-        <ul class="nav-links">
-          <li><a href="#about">Sobre</a></li>
-          <li><a href="#services">Serviços</a></li>
-          <li><a href="#contact">Contato</a></li>
-        </ul>
-      </nav>
-    </div>
-  </header>
+  <div id="app">
+    <h2>Login no Dispositivo</h2>
+    <input id="ip" placeholder="IP do Dispositivo (ex: 192.168.2.31)" />
+    <input id="port" placeholder="Porta (ex: 80)" />
+    <input id="user" placeholder="Usuário (ex: admin)" />
+    <input id="password" placeholder="Senha" type="password" />
+    <input id="nome" placeholder="Nome do Dispositivo" />
+    <button onclick="login()">Conectar</button>
+    <p id="status"></p>
 
-  <main>
-    <section id="hero">
-      <div class="container">
-        <h1>Bem-vindo à MR Privacidade Consultoria</h1>
-        <p>Especialistas em adequação à LGPD e proteção de dados.</p>
-        <a href="#services" class="btn">Saiba Mais</a>
-      </div>
-    </section>
+    <hr>
 
-    <section id="about" class="section">
-      <div class="container">
-        <h2>Sobre Nós</h2>
-        <p>Somos líderes em consultoria de proteção de dados, oferecendo serviços personalizados para garantir que sua empresa esteja em conformidade com a LGPD.</p>
-      </div>
-    </section>
+    <h3>Cadastro do Funcionário</h3>
+    <input id="employeeNo" placeholder="Matrícula / Employee No" />
+    <input id="funcName" placeholder="Nome do Funcionário" />
+    <input id="cardNo" placeholder="Número do Cartão" />
+    <button onclick="cadastrarFuncionario()">Cadastrar Funcionário</button>
 
-    <section id="services" class="section bg-light">
-      <div class="container">
-        <h2>Nossos Serviços</h2>
-        <div class="services-grid">
-          <div class="service-item">
-            <h3>Implementação da LGPD</h3>
-            <p>Garantimos que sua empresa esteja em conformidade com a Lei Geral de Proteção de Dados.</p>
-          </div>
-          <div class="service-item">
-            <h3>Treinamentos</h3>
-            <p>Capacite sua equipe para gerenciar dados com segurança e eficiência.</p>
-          </div>
-          <div class="service-item">
-            <h3>DPO as a Service</h3>
-            <p>Oferecemos serviços de Encarregado de Proteção de Dados terceirizado.</p>
-          </div>
-          <div class="service-item">
-            <h3>Auditorias</h3>
-            <p>Realizamos auditorias para monitorar e manter a conformidade contínua.</p>
-          </div>
-        </div>
-      </div>
-    </section>
+    <hr>
 
-    <section id="contact" class="section">
-      <div class="container">
-        <h2>Fale Conosco</h2>
-        <form id="contact-form">
-          <input type="text" id="name" placeholder="Seu Nome" required>
-          <input type="email" id="email" placeholder="Seu Email" required>
-          <textarea id="message" placeholder="Sua Mensagem"></textarea>
-          <button type="submit" class="btn">Enviar</button>
-        </form>
-      </div>
-    </section>
-  </main>
+    <h3>Enviar Foto</h3>
+    <input type="file" id="faceImage" accept="image/jpeg" />
+    <input id="fdid" placeholder="FDID (ex: 1)" value="1" />
+    <select id="faceType">
+      <option value="blackFD">blackFD</option>
+      <option value="whiteFD">whiteFD</option>
+    </select>
+    <button onclick="enviarFace()">Enviar Face</button>
+  </div>
 
-  <footer>
-    <div class="container">
-      <p>&copy; 2024 MR Privacidade Consultoria. Todos os direitos reservados.</p>
-    </div>
-  </footer>
   <script src="script.js"></script>
 </body>
 </html>
