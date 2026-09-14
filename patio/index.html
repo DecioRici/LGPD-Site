@@ -18,20 +18,20 @@
       <div class="clock"><span id="current-date"></span><strong id="current-time"></strong></div>
       <button class="btn ghost" id="load-examples">Dados de teste</button>
       <button class="btn ghost" id="export-csv">Exportar CSV</button>
-      <button class="btn primary" id="new-record">+ Cadastrar veículo</button>
+      <button class="btn primary" id="new-record">Cadastrar veículo</button>
     </div>
   </header>
 
   <nav class="tabs" aria-label="Navegação do sistema">
-    <button class="tab active" data-view="kanban"><span>01</span>Quadro operacional</button>
-    <button class="tab" data-view="dashboard"><span>02</span>Indicadores</button>
-    <button class="tab" data-view="history"><span>03</span>Histórico</button>
-    <button class="tab" data-view="database"><span>04</span>Registros</button>
+    <button class="tab active" data-view="kanban">Quadro operacional</button>
+    <button class="tab" data-view="dashboard">Indicadores</button>
+    <button class="tab" data-view="history">Histórico</button>
+    <button class="tab" data-view="database">Registros</button>
   </nav>
 
   <main>
     <section class="page-heading">
-      <div><p class="eyebrow">Visão geral</p><h2 id="page-title">Quadro operacional</h2></div>
+      <div><h2 id="page-title">Quadro operacional</h2></div>
       <p class="storage-status"><i></i> Dados salvos neste navegador</p>
     </section>
 
@@ -57,9 +57,9 @@
 
     <section class="view" id="view-dashboard">
       <div class="dashboard-grid">
-        <article class="panel chart-panel"><div class="panel-heading"><div><p class="eyebrow">Distribuição</p><h3>Caminhões por etapa</h3></div></div><div id="stage-chart" class="bar-chart"></div></article>
-        <article class="panel chart-panel"><div class="panel-heading"><div><p class="eyebrow">Operação</p><h3>Cargas e descargas</h3></div></div><div id="operation-chart" class="bar-chart"></div></article>
-        <article class="panel full"><div class="panel-heading"><div><p class="eyebrow">Acompanhamento</p><h3>Permanência por etapa</h3></div></div>
+        <article class="panel chart-panel"><div class="panel-heading"><div><h3>Caminhões por etapa</h3></div></div><div id="stage-chart" class="bar-chart"></div></article>
+        <article class="panel chart-panel"><div class="panel-heading"><div><h3>Cargas e descargas</h3></div></div><div id="operation-chart" class="bar-chart"></div></article>
+        <article class="panel full"><div class="panel-heading"><div><h3>Permanência por etapa</h3></div></div>
           <p class="note">A quantidade e o tempo direcionam a atenção operacional. A confirmação de gargalo exige análise da capacidade e da taxa de processamento.</p>
           <div class="table-wrap"><table><thead><tr><th>Etapa</th><th>Quantidade</th><th>Tempo médio</th><th>Maior tempo</th></tr></thead><tbody id="analysis-body"></tbody></table></div>
         </article>
@@ -67,13 +67,13 @@
     </section>
 
     <section class="view" id="view-history">
-      <article class="panel"><div class="panel-heading"><div><p class="eyebrow">Rastreabilidade</p><h3>Histórico de movimentações</h3></div><span class="record-count" id="history-count">0 eventos</span></div>
+      <article class="panel"><div class="panel-heading"><div><h3>Histórico de movimentações</h3></div><span class="record-count" id="history-count">0 eventos</span></div>
         <div class="table-wrap"><table><thead><tr><th>Data e hora</th><th>Placa</th><th>Pedido</th><th>Origem</th><th>Destino</th><th>Ação</th></tr></thead><tbody id="history-body"></tbody></table></div>
       </article>
     </section>
 
     <section class="view" id="view-database">
-      <article class="panel"><div class="panel-heading"><div><p class="eyebrow">Consulta</p><h3>Base de registros</h3></div><div class="panel-actions"><span class="record-count" id="database-count">0 registros</span><button class="btn danger" id="clear-data">Limpar base</button></div></div>
+      <article class="panel"><div class="panel-heading"><div><h3>Base de registros</h3></div><div class="panel-actions"><span class="record-count" id="database-count">0 registros</span><button class="btn danger" id="clear-data">Limpar base</button></div></div>
         <div class="table-wrap"><table><thead><tr><th>Pedido</th><th>Placa</th><th>Motorista</th><th>Transportadora</th><th>Produto</th><th>Quantidade</th><th>Operação</th><th>Frete</th><th>Agendamento</th><th>Status</th><th></th></tr></thead><tbody id="database-body"></tbody></table></div>
       </article>
     </section>
@@ -82,7 +82,7 @@
   <dialog id="record-dialog">
     <form id="record-form">
       <input type="hidden" name="recordId">
-      <div class="dialog-head"><div><p class="eyebrow">Dados operacionais</p><h2 id="dialog-title">Cadastrar veículo</h2></div><button type="button" class="icon-button" id="close-dialog" aria-label="Fechar">×</button></div>
+      <div class="dialog-head"><div><h2 id="dialog-title">Cadastrar veículo</h2></div><button type="button" class="icon-button" id="close-dialog" aria-label="Fechar">×</button></div>
       <div class="form-section"><h3>Identificação</h3><div class="form-grid">
         <label>Pedido ou romaneio*<input name="order" required></label>
         <label>Placa*<input name="plate" required maxlength="8" placeholder="ABC1D23" autocomplete="off"></label>
@@ -105,7 +105,7 @@
   </dialog>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
-  <footer><span>Controle operacional de pátio</span><span>Armazenamento local seguro</span></footer>
+  <footer><span>Controle operacional de pátio</span><span>Dados mantidos neste dispositivo</span></footer>
   <script src="kanban.js"></script>
 </body>
 </html>
