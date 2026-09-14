@@ -108,11 +108,11 @@ $('#board').addEventListener('dragstart',e=>{
 });
 $('#board').addEventListener('dragend',e=>{
  e.target.closest('.truck-card')?.classList.remove('dragging');
- $('.column').forEach(c=>c.classList.remove('drag-over'));draggedId=null;
+ $$('.column').forEach(c=>c.classList.remove('drag-over'));draggedId=null;
 });
 $('#board').addEventListener('dragover',e=>{
  const column=e.target.closest('.column');if(!column)return;
- e.preventDefault();$('.column').forEach(c=>c.classList.toggle('drag-over',c===column));
+ e.preventDefault();$$('.column').forEach(c=>c.classList.toggle('drag-over',c===column));
 });
 $('#board').addEventListener('drop',e=>{
  const column=e.target.closest('.column');if(!column)return;e.preventDefault();
