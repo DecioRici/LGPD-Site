@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Projeto acadêmico de dashboard operacional para análise do fluxo de caminhões em pátio logístico">
+  <title>Dashboard Kanban Logístico | Décio Rici Neto</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#inicio">TCC · Engenharia de Produção</a>
+    <nav aria-label="Navegação principal">
+      <a href="#resultados">Resultados</a>
+      <a href="#metodo">Método</a>
+      <a href="#limites">Limitações</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero" id="inicio">
+      <div class="hero-copy">
+        <p class="eyebrow">Projeto acadêmico · 2026</p>
+        <h1>Dashboard operacional para análise do fluxo de caminhões</h1>
+        <p class="lead">Desenvolvimento de um painel a partir dos registros de um Kanban digital utilizado no pátio logístico de uma empresa do setor de alimentos</p>
+        <p class="author">Décio Rici Neto · Engenharia de Produção · UNISAGRADO</p>
+        <div class="actions">
+          <a class="button primary" href="documentos/TCC_Decio_Rici_2026.pdf" target="_blank" rel="noopener">Ler o TCC em PDF</a>
+          <a class="button secondary" href="#resultados">Ver indicadores</a>
+        </div>
+      </div>
+      <aside class="hero-note" aria-label="Escopo do estudo">
+        <span>Escopo analisado</span>
+        <strong>10 mar — 7 abr 2026</strong>
+        <p>Dados anonimizados e resultados apresentados sem identificação da organização</p>
+      </aside>
+    </section>
+
+    <section class="section" id="resultados">
+      <div class="section-heading">
+        <p class="eyebrow">Resultados principais</p>
+        <h2>Uma visão objetiva do período analisado</h2>
+        <p>Os cartões mostram a base completa. A mediana representa melhor o comportamento típico porque a distribuição contém permanências muito longas</p>
+      </div>
+
+      <div class="metrics" id="metrics" aria-live="polite"></div>
+
+      <div class="analysis-grid">
+        <article class="panel">
+          <div class="panel-title">
+            <h3>Registros por fluxo</h3>
+            <span>n = 241</span>
+          </div>
+          <div id="flow-chart" class="bar-chart" role="img" aria-label="Comparação de registros de expedição e matéria-prima"></div>
+        </article>
+
+        <article class="panel">
+          <div class="panel-title">
+            <h3>Leitura estatística</h3>
+            <span>tempo total</span>
+          </div>
+          <div class="comparison">
+            <div><span>Média completa</span><strong>4h01</strong></div>
+            <div><span>Mediana completa</span><strong>2h04</strong></div>
+            <div><span>Média sem extremos</span><strong>2h27</strong></div>
+            <div><span>Limite de Tukey</span><strong>10h18</strong></div>
+          </div>
+        </article>
+      </div>
+
+      <article class="finding">
+        <p class="eyebrow">Principal interpretação</p>
+        <h3>A média isolada não descreve o atendimento típico</h3>
+        <p>Dezoito registros acima de 10h18 elevaram a média geral. Eles foram mantidos na base e analisados separadamente, pois podem representar ocorrências operacionais relevantes e não simples erros de cadastro</p>
+      </article>
+    </section>
+
+    <section class="section method" id="metodo">
+      <div class="section-heading">
+        <p class="eyebrow">Método e tecnologia</p>
+        <h2>Do evento operacional ao indicador</h2>
+      </div>
+      <ol class="pipeline">
+        <li><span>1</span><div><strong>Kanban web</strong><small>Interface e movimentação dos cards em JavaScript</small></div></li>
+        <li><span>2</span><div><strong>Banco SQL</strong><small>Persistência dos eventos e marcos temporais</small></div></li>
+        <li><span>3</span><div><strong>Python</strong><small>Extração, tratamento, validação e indicadores</small></div></li>
+        <li><span>4</span><div><strong>Excel</strong><small>Consolidação e conferência independente</small></div></li>
+        <li><span>5</span><div><strong>Dashboard</strong><small>Leitura gerencial dos padrões e exceções</small></div></li>
+      </ol>
+      <p class="privacy">A versão pública contém somente resultados agregados, regras de cálculo e documentos anonimizados. Credenciais, endereços internos e dados operacionais identificáveis não são disponibilizados</p>
+    </section>
+
+    <section class="section" id="limites">
+      <div class="section-heading">
+        <p class="eyebrow">Leitura responsável</p>
+        <h2>O que os resultados permitem afirmar</h2>
+      </div>
+      <div class="limits-grid">
+        <article><strong>O estudo demonstra</strong><p>Consolidação dos registros, comparação dos fluxos, identificação de etapas demoradas e visualização de ocorrências extremas</p></article>
+        <article><strong>O estudo não demonstra</strong><p>Redução de filas, custos ou permanência, porque não houve uma avaliação controlada antes e depois da implantação</p></article>
+        <article><strong>Próxima etapa</strong><p>Ampliar a série histórica, registrar motivos das demoras e acompanhar mediana, percentil 90 e completude por fluxo</p></article>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Décio Rici Neto · Trabalho de Conclusão de Curso · 2026</p>
+    <a href="documentos/TCC_Decio_Rici_2026.pdf" target="_blank" rel="noopener">Documento completo</a>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
