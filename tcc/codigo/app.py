@@ -1,5 +1,5 @@
 # =====================================================
-# KANBAN LOGÍSTICO — FLUXODOCK
+# KANBAN LOGÍSTICO — CONTROLE DE PÁTIO
 # Arquivo: app.py
 # Executar: streamlit run app.py
 # =====================================================
@@ -16,7 +16,7 @@ import streamlit as st
 # CONFIGURAÇÕES GERAIS
 # =====================================================
 st.set_page_config(
-    page_title="FluxoDock",
+    page_title="Controle de Pátio Logístico",
     page_icon="🚚",
     layout="wide",
     initial_sidebar_state="expanded",
