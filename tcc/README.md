@@ -1,46 +1,41 @@
-# Dashboard Kanban Logístico
+# Sistema Kanban digital para pátio logístico
 
-Versão acadêmica e anonimizada do Trabalho de Conclusão de Curso de Décio Rici Neto, apresentado ao curso de Engenharia de Produção do UNISAGRADO
+Página acadêmica do Trabalho de Conclusão de Curso de Décio Rici Neto, apresentado ao curso de Engenharia de Produção do UNISAGRADO em 2026.
 
 ## Objetivo
 
-Desenvolver um dashboard operacional a partir dos dados de um Kanban digital para analisar o fluxo de caminhões em um pátio logístico
+Desenvolver um protótipo funcional de sistema Kanban digital em Python para apoiar o controle operacional de caminhões em pátio logístico.
 
-## Escopo da versão pública
+## Escopo da pesquisa
 
-- site de apresentação do projeto
-- indicadores agregados de 241 agendamentos
-- trabalho completo em PDF
-- descrição das tecnologias e regras de análise
-- nenhuma credencial, endereço interno ou identificação da empresa
+- fluxo visual com sete etapas, do agendamento à liberação;
+- cadastro operacional e movimentação de cards;
+- histórico de origem, destino, ação e horário;
+- filtros, indicadores, análise por etapa e exportação em CSV;
+- validação funcional com quatro operações simuladas;
+- nenhuma identificação de empresa ou dado operacional real.
 
-## Tecnologias
+## Tecnologias do protótipo
 
-- JavaScript para a interface e as visualizações do site
-- SQL no armazenamento dos eventos do projeto original
-- Python no tratamento, validação e cálculo dos indicadores
-- Excel na consolidação e conferência independente
+- Python para regras, consultas, movimentações e indicadores;
+- Streamlit para a interface;
+- pandas para organização tabular;
+- SQLite para armazenamento local.
 
-## Principais resultados
+JavaScript é utilizado somente nesta página de apresentação. Excel não é necessário para executar o protótipo, mas pode abrir os arquivos CSV exportados. O código operacional do protótipo não integra esta publicação.
 
-- média de permanência: 4h01
-- mediana de permanência: 2h04
-- registros acima do limite de Tukey de 10h18: 18
-- expedição: 195 registros
-- matéria-prima: 46 registros
+## Interpretação dos resultados
 
-Os resultados caracterizam o período analisado. O estudo não comprova redução de filas, custos ou tempo porque não houve comparação controlada antes e depois da implantação
+Os testes funcionais atenderam aos cenários de cadastro, avanço, retorno, cancelamento lógico, filtros, indicadores, análise operacional e exportação. Como a validação utilizou dados simulados e não houve implantação real, o trabalho não afirma redução de filas, custos, mão de obra ou tempo de permanência.
 
-## Execução local
+## Página publicada
 
-O site é estático. Abra `index.html` em um navegador ou execute um servidor HTTP local
+https://lgpd-site-mocha.vercel.app/tcc/
+
+## Execução local da página
 
 ```bash
 python -m http.server 8000
 ```
 
-Depois, acesse `http://localhost:8000`
-
-## Privacidade
-
-A empresa é identificada somente como empresa do setor de alimentos. A base operacional bruta não integra este repositório
+Depois, acesse `http://localhost:8000/tcc/`.

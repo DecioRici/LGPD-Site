@@ -3,16 +3,18 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Projeto acadêmico de dashboard operacional para análise do fluxo de caminhões em pátio logístico">
-  <title>Dashboard Kanban Logístico | Décio Rici Neto</title>
+  <meta name="description" content="Protótipo de sistema Kanban digital em Python para controle operacional de caminhões em pátio logístico">
+  <title>Kanban Digital para Pátio Logístico | Décio Rici Neto</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <header class="topbar">
     <a class="brand" href="#inicio">TCC · Engenharia de Produção</a>
     <nav aria-label="Navegação principal">
-      <a href="#resultados">Resultados</a>
-      <a href="#metodo">Método</a>
+      <a href="#projeto">Projeto</a>
+      <a href="#fluxo">Fluxo</a>
+      <a href="#execucao">Execução</a>
+      <a href="#validacao">Validação</a>
       <a href="#limites">Limitações</a>
     </nav>
   </header>
@@ -20,94 +22,126 @@
   <main>
     <section class="hero" id="inicio">
       <div class="hero-copy">
-        <p class="eyebrow">Projeto acadêmico · 2026</p>
-        <h1>Dashboard operacional para análise do fluxo de caminhões</h1>
-        <p class="lead">Desenvolvimento de um painel a partir dos registros de um Kanban digital utilizado no pátio logístico de uma empresa do setor de alimentos</p>
+        <p class="eyebrow">Trabalho de Conclusão de Curso · 2026</p>
+        <h1>Sistema Kanban digital em Python para pátio logístico</h1>
+        <p class="lead">Protótipo desenvolvido para centralizar informações, padronizar etapas e registrar o histórico do fluxo de caminhões.</p>
         <p class="author">Décio Rici Neto · Engenharia de Produção · UNISAGRADO</p>
         <div class="actions">
-          <a class="button primary" href="documentos/TCC_Decio_Rici_2026.pdf" target="_blank" rel="noopener">Ler o TCC em PDF</a>
-          <a class="button secondary" href="#resultados">Ver indicadores</a>
+          <a class="button primary" href="documentos/TCC_Decio_Rici_V6_FINAL.pdf" target="_blank" rel="noopener">Abrir o TCC em PDF</a>
+          <a class="button secondary" href="#projeto">Conhecer o projeto</a>
         </div>
       </div>
-      <aside class="hero-note" aria-label="Escopo do estudo">
-        <span>Escopo analisado</span>
-        <strong>10 mar — 7 abr 2026</strong>
-        <p>Dados anonimizados e resultados apresentados sem identificação da organização</p>
+      <aside class="hero-note" aria-label="Escopo da pesquisa">
+        <span>Escopo da pesquisa</span>
+        <strong>Protótipo funcional</strong>
+        <p>Validação com dados simulados, sem identificação de empresa e sem alegação de ganhos operacionais reais.</p>
       </aside>
     </section>
 
-    <section class="section" id="resultados">
+    <section class="section" id="projeto">
       <div class="section-heading">
-        <p class="eyebrow">Resultados principais</p>
-        <h2>Uma visão objetiva do período analisado</h2>
-        <p>Os cartões mostram a base completa. A mediana representa melhor o comportamento típico porque a distribuição contém permanências muito longas</p>
+        <p class="eyebrow">Problema e solução</p>
+        <h2>Uma visão única para acompanhar cada caminhão</h2>
+        <p>O projeto responde à dispersão de informações entre planilhas, anotações e mensagens. Cada operação é registrada em um card e acompanhada até a liberação.</p>
       </div>
-
-      <div class="metrics" id="metrics" aria-live="polite"></div>
-
-      <div class="analysis-grid">
-        <article class="panel">
-          <div class="panel-title">
-            <h3>Registros por fluxo</h3>
-            <span>n = 241</span>
-          </div>
-          <div id="flow-chart" class="bar-chart" role="img" aria-label="Comparação de registros de expedição e matéria-prima"></div>
-        </article>
-
-        <article class="panel">
-          <div class="panel-title">
-            <h3>Leitura estatística</h3>
-            <span>tempo total</span>
-          </div>
-          <div class="comparison">
-            <div><span>Média completa</span><strong>4h01</strong></div>
-            <div><span>Mediana completa</span><strong>2h04</strong></div>
-            <div><span>Média sem extremos</span><strong>2h27</strong></div>
-            <div><span>Limite de Tukey</span><strong>10h18</strong></div>
-          </div>
-        </article>
+      <div class="feature-grid">
+        <article><span>01</span><h3>Centralização</h3><p>Cadastro operacional e situação atual reunidos em uma base SQLite.</p></article>
+        <article><span>02</span><h3>Padronização</h3><p>Sete etapas fixas organizam o fluxo e reduzem ambiguidades de status.</p></article>
+        <article><span>03</span><h3>Rastreabilidade</h3><p>Origem, destino, horário e ação são preservados no histórico.</p></article>
+        <article><span>04</span><h3>Análise</h3><p>Filtros, indicadores por etapa e exportação em CSV apoiam a conferência.</p></article>
       </div>
-
-      <article class="finding">
-        <p class="eyebrow">Principal interpretação</p>
-        <h3>A média isolada não descreve o atendimento típico</h3>
-        <p>Dezoito registros acima de 10h18 elevaram a média geral. Eles foram mantidos na base e analisados separadamente, pois podem representar ocorrências operacionais relevantes e não simples erros de cadastro</p>
-      </article>
     </section>
 
-    <section class="section method" id="metodo">
+    <section class="section flow-section" id="fluxo">
       <div class="section-heading">
-        <p class="eyebrow">Método e tecnologia</p>
-        <h2>Do evento operacional ao indicador</h2>
+        <p class="eyebrow">Fluxo operacional</p>
+        <h2>Do agendamento à liberação</h2>
       </div>
-      <ol class="pipeline">
-        <li><span>1</span><div><strong>Kanban web</strong><small>Interface e movimentação dos cards em JavaScript</small></div></li>
-        <li><span>2</span><div><strong>Banco SQL</strong><small>Persistência dos eventos e marcos temporais</small></div></li>
-        <li><span>3</span><div><strong>Python</strong><small>Extração, tratamento, validação e indicadores</small></div></li>
-        <li><span>4</span><div><strong>Excel</strong><small>Consolidação e conferência independente</small></div></li>
-        <li><span>5</span><div><strong>Dashboard</strong><small>Leitura gerencial dos padrões e exceções</small></div></li>
-      </ol>
-      <p class="privacy">A versão pública contém somente resultados agregados, regras de cálculo e documentos anonimizados. Credenciais, endereços internos e dados operacionais identificáveis não são disponibilizados</p>
+      <div class="flow" aria-label="Sete etapas do fluxo operacional">
+        <div><b>1</b><span>Agendado</span></div>
+        <div><b>2</b><span>Check-in</span></div>
+        <div><b>3</b><span>Aguardando no pátio</span></div>
+        <div><b>4</b><span>Pesagem inicial</span></div>
+        <div><b>5</b><span>Carregamento ou descarga</span></div>
+        <div><b>6</b><span>Pesagem final</span></div>
+        <div><b>7</b><span>Liberado</span></div>
+      </div>
+      <figure class="diagram">
+        <img src="assets/fluxo-operacional.png" alt="Fluxo do caminhão em sete etapas, do agendamento à liberação">
+        <figcaption>Fluxo operacional representado no protótipo.</figcaption>
+      </figure>
     </section>
 
-    <section class="section" id="limites">
+    <section class="section tech-section">
       <div class="section-heading">
-        <p class="eyebrow">Leitura responsável</p>
-        <h2>O que os resultados permitem afirmar</h2>
+        <p class="eyebrow">Arquitetura</p>
+        <h2>Tecnologias utilizadas</h2>
+      </div>
+      <div class="tech-grid">
+        <article><strong>Python</strong><p>Linguagem utilizada nas regras, movimentações, consultas e indicadores.</p></article>
+        <article><strong>Streamlit</strong><p>Interface com Kanban, cadastro, dashboard e consultas.</p></article>
+        <article><strong>pandas</strong><p>Organização dos dados exibidos nos filtros, gráficos e exportações.</p></article>
+        <article><strong>SQLite</strong><p>Armazenamento local das operações e do histórico de movimentações.</p></article>
+      </div>
+      <figure class="diagram architecture">
+        <img src="assets/arquitetura-sistema.png" alt="Estrutura funcional com Streamlit, Python, pandas, SQLite, indicadores e exportação CSV">
+        <figcaption>Estrutura funcional descrita no trabalho.</figcaption>
+      </figure>
+    </section>
+
+    <section class="section execution-section" id="execucao">
+      <div class="section-heading">
+        <p class="eyebrow">Ambiente e publicação</p>
+        <h2>Como o protótipo foi executado</h2>
+        <p>O desenvolvimento e os testes descritos no TCC ocorreram localmente em um notebook pessoal. O arquivo <code>app.py</code> foi iniciado pelo terminal com <code>streamlit run app.py</code>, e a interface foi acessada pelo navegador.</p>
       </div>
       <div class="limits-grid">
-        <article><strong>O estudo demonstra</strong><p>Consolidação dos registros, comparação dos fluxos, identificação de etapas demoradas e visualização de ocorrências extremas</p></article>
-        <article><strong>O estudo não demonstra</strong><p>Redução de filas, custos ou permanência, porque não houve uma avaliação controlada antes e depois da implantação</p></article>
-        <article><strong>Próxima etapa</strong><p>Ampliar a série histórica, registrar motivos das demoras e acompanhar mediana, percentil 90 e completude por fluxo</p></article>
+        <article><strong>Núcleo do sistema</strong><p>Python reúne as regras; Streamlit apresenta as telas; pandas organiza os dados; e SQLite mantém as operações e o histórico no arquivo local <code>kanban_logistico.db</code>.</p></article>
+        <article><strong>JavaScript e Excel</strong><p>JavaScript é usado somente nesta página. Excel não faz parte da execução do protótipo, mas pode abrir os arquivos CSV exportados.</p></article>
+        <article><strong>Publicação acadêmica</strong><p>O repositório contém a página e o PDF revisado. O código operacional do protótipo não integra a publicação pública.</p></article>
+      </div>
+      <p class="repo-link"><a class="button secondary" href="https://github.com/DecioRici/LGPD-Site/tree/main/tcc" target="_blank" rel="noopener">Ver arquivos no GitHub</a></p>
+    </section>
+
+    <section class="section" id="validacao">
+      <div class="section-heading">
+        <p class="eyebrow">Validação funcional</p>
+        <h2>Oito cenários verificados</h2>
+        <p>A rotina de validação utilizou quatro operações simuladas. O objetivo foi verificar o comportamento das funções, e não medir desempenho de uma empresa real.</p>
+      </div>
+      <div class="validation-grid">
+        <span>Cadastro <b>Atendido</b></span>
+        <span>Avanço de etapa <b>Atendido</b></span>
+        <span>Retorno de etapa <b>Atendido</b></span>
+        <span>Cancelamento lógico <b>Atendido</b></span>
+        <span>Filtros <b>Atendido</b></span>
+        <span>Indicadores <b>Atendido</b></span>
+        <span>Análise operacional <b>Atendido</b></span>
+        <span>Exportação em CSV <b>Atendido</b></span>
+      </div>
+      <figure class="dashboard-shot">
+        <img src="assets/dashboard-simulado.png" alt="Dashboard do protótipo com quatro registros simulados">
+        <figcaption>Dashboard operacional com dados simulados utilizados na validação.</figcaption>
+      </figure>
+    </section>
+
+    <section class="section limits-section" id="limites">
+      <div class="section-heading">
+        <p class="eyebrow">Interpretação correta</p>
+        <h2>O que o trabalho demonstra</h2>
+      </div>
+      <div class="limits-grid">
+        <article><strong>Demonstra</strong><p>Que o protótipo executa cadastro, movimentação, histórico, filtros, indicadores, análise por etapa e exportação.</p></article>
+        <article><strong>Não demonstra</strong><p>Redução de filas, tempo, custos, mão de obra ou aumento de produtividade, pois não houve implantação real.</p></article>
+        <article><strong>Próxima etapa</strong><p>Aplicar o sistema em um pátio real, definir referências por etapa e comparar indicadores antes e depois.</p></article>
       </div>
     </section>
   </main>
 
   <footer>
     <p>Décio Rici Neto · Trabalho de Conclusão de Curso · 2026</p>
-    <a href="documentos/TCC_Decio_Rici_2026.pdf" target="_blank" rel="noopener">Documento completo</a>
+    <a href="documentos/TCC_Decio_Rici_V6_FINAL.pdf" target="_blank" rel="noopener">Documento completo</a>
   </footer>
-
   <script src="script.js"></script>
 </body>
 </html>
