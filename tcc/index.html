@@ -2,146 +2,121 @@
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Protótipo de sistema Kanban digital em Python para controle operacional de caminhões em pátio logístico">
-  <title>Kanban Digital para Pátio Logístico | Décio Rici Neto</title>
-  <link rel="stylesheet" href="styles.css">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Sistema Kanban digital para controle operacional de caminhões em pátio logístico">
+  <title>Kanban Logístico | Décio Rici Neto</title>
+  <link rel="stylesheet" href="kanban.css">
 </head>
 <body>
-  <header class="topbar">
-    <a class="brand" href="#inicio">TCC · Engenharia de Produção</a>
-    <nav aria-label="Navegação principal">
-      <a href="#projeto">Projeto</a>
-      <a href="#fluxo">Fluxo</a>
-      <a href="#execucao">Execução</a>
-      <a href="#validacao">Validação</a>
-      <a href="#limites">Limitações</a>
-    </nav>
+  <header class="app-header">
+    <div>
+      <p class="eyebrow">TCC · Engenharia de Produção · 2026</p>
+      <h1>Kanban Logístico</h1>
+      <p class="subtitle">Controle visual do fluxo de caminhões</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn primary" id="new-record">+ Novo caminhão</button>
+      <button class="btn" id="load-examples">Carregar exemplos</button>
+      <button class="btn" id="export-csv">Exportar CSV</button>
+      <a class="btn" href="documentos/TCC_Decio_Rici_V6_FINAL.pdf" target="_blank" rel="noopener">Abrir TCC</a>
+    </div>
   </header>
 
+  <nav class="tabs" aria-label="Telas do sistema">
+    <button class="tab active" data-view="kanban">Kanban</button>
+    <button class="tab" data-view="dashboard">Dashboard</button>
+    <button class="tab" data-view="history">Histórico</button>
+    <button class="tab" data-view="database">Base de dados</button>
+  </nav>
+
   <main>
-    <section class="hero" id="inicio">
-      <div class="hero-copy">
-        <p class="eyebrow">Trabalho de Conclusão de Curso · 2026</p>
-        <h1>Sistema Kanban digital em Python para pátio logístico</h1>
-        <p class="lead">Protótipo desenvolvido para centralizar informações, padronizar etapas e registrar o histórico do fluxo de caminhões.</p>
-        <p class="author">Décio Rici Neto · Engenharia de Produção · UNISAGRADO</p>
-        <div class="actions">
-          <a class="button primary" href="documentos/TCC_Decio_Rici_V6_FINAL.pdf" target="_blank" rel="noopener">Abrir o TCC em PDF</a>
-          <a class="button secondary" href="#projeto">Conhecer o projeto</a>
-        </div>
-      </div>
-      <aside class="hero-note" aria-label="Escopo da pesquisa">
-        <span>Escopo da pesquisa</span>
-        <strong>Protótipo funcional</strong>
-        <p>Validação com dados simulados, sem identificação de empresa e sem alegação de ganhos operacionais reais.</p>
-      </aside>
+    <section class="metrics" aria-label="Indicadores">
+      <article><span>Total cadastrado</span><strong id="metric-total">0</strong></article>
+      <article><span>Registros ativos</span><strong id="metric-active">0</strong></article>
+      <article><span>No pátio</span><strong id="metric-yard">0</strong></article>
+      <article><span>Liberados</span><strong id="metric-released">0</strong></article>
+      <article><span>Agendamentos vencidos</span><strong id="metric-overdue">0</strong></article>
     </section>
 
-    <section class="section" id="projeto">
-      <div class="section-heading">
-        <p class="eyebrow">Problema e solução</p>
-        <h2>Uma visão única para acompanhar cada caminhão</h2>
-        <p>O projeto responde à dispersão de informações entre planilhas, anotações e mensagens. Cada operação é registrada em um card e acompanhada até a liberação.</p>
-      </div>
-      <div class="feature-grid">
-        <article><span>01</span><h3>Centralização</h3><p>Cadastro operacional e situação atual reunidos em uma base SQLite.</p></article>
-        <article><span>02</span><h3>Padronização</h3><p>Sete etapas fixas organizam o fluxo e reduzem ambiguidades de status.</p></article>
-        <article><span>03</span><h3>Rastreabilidade</h3><p>Origem, destino, horário e ação são preservados no histórico.</p></article>
-        <article><span>04</span><h3>Análise</h3><p>Filtros, indicadores por etapa e exportação em CSV apoiam a conferência.</p></article>
+    <section class="filters panel">
+      <label>Busca
+        <input id="filter-text" type="search" placeholder="Placa, motorista, pedido ou produto">
+      </label>
+      <label>Operação
+        <select id="filter-operation"><option value="">Todas</option><option>Carga</option><option>Descarga</option></select>
+      </label>
+      <label>Frete
+        <select id="filter-freight"><option value="">Todos</option><option>CIF</option><option>FOB</option><option>Próprio</option></select>
+      </label>
+      <button class="link-button" id="clear-filters">Limpar filtros</button>
+    </section>
+
+    <section class="view active" id="view-kanban">
+      <div class="board" id="board" aria-label="Quadro Kanban"></div>
+    </section>
+
+    <section class="view" id="view-dashboard">
+      <div class="dashboard-grid">
+        <article class="panel">
+          <h2>Caminhões por etapa</h2>
+          <div id="stage-chart" class="bar-chart"></div>
+        </article>
+        <article class="panel">
+          <h2>Resumo das operações</h2>
+          <div id="operation-chart" class="bar-chart"></div>
+        </article>
+        <article class="panel full">
+          <h2>Análise operacional por etapa</h2>
+          <p class="note">A concentração de registros indica atenção necessária, mas não comprova gargalo sem dados de capacidade e processamento.</p>
+          <div class="table-wrap"><table><thead><tr><th>Etapa</th><th>Quantidade</th><th>Tempo médio na etapa</th><th>Maior tempo</th></tr></thead><tbody id="analysis-body"></tbody></table></div>
+        </article>
       </div>
     </section>
 
-    <section class="section flow-section" id="fluxo">
-      <div class="section-heading">
-        <p class="eyebrow">Fluxo operacional</p>
-        <h2>Do agendamento à liberação</h2>
+    <section class="view" id="view-history">
+      <div class="panel">
+        <div class="section-title"><div><h2>Histórico de movimentações</h2><p>Origem, destino, ação e momento de cada alteração.</p></div></div>
+        <div class="table-wrap"><table><thead><tr><th>Data e hora</th><th>Placa</th><th>Pedido</th><th>Origem</th><th>Destino</th><th>Ação</th></tr></thead><tbody id="history-body"></tbody></table></div>
       </div>
-      <div class="flow" aria-label="Sete etapas do fluxo operacional">
-        <div><b>1</b><span>Agendado</span></div>
-        <div><b>2</b><span>Check-in</span></div>
-        <div><b>3</b><span>Aguardando no pátio</span></div>
-        <div><b>4</b><span>Pesagem inicial</span></div>
-        <div><b>5</b><span>Carregamento ou descarga</span></div>
-        <div><b>6</b><span>Pesagem final</span></div>
-        <div><b>7</b><span>Liberado</span></div>
-      </div>
-      <figure class="diagram">
-        <img src="assets/fluxo-operacional.png" alt="Fluxo do caminhão em sete etapas, do agendamento à liberação">
-        <figcaption>Fluxo operacional representado no protótipo.</figcaption>
-      </figure>
     </section>
 
-    <section class="section tech-section">
-      <div class="section-heading">
-        <p class="eyebrow">Arquitetura</p>
-        <h2>Tecnologias utilizadas</h2>
-      </div>
-      <div class="tech-grid">
-        <article><strong>Python</strong><p>Linguagem utilizada nas regras, movimentações, consultas e indicadores.</p></article>
-        <article><strong>Streamlit</strong><p>Interface com Kanban, cadastro, dashboard e consultas.</p></article>
-        <article><strong>pandas</strong><p>Organização dos dados exibidos nos filtros, gráficos e exportações.</p></article>
-        <article><strong>SQLite</strong><p>Armazenamento local das operações e do histórico de movimentações.</p></article>
-      </div>
-      <figure class="diagram architecture">
-        <img src="assets/arquitetura-sistema.png" alt="Estrutura funcional com Streamlit, Python, pandas, SQLite, indicadores e exportação CSV">
-        <figcaption>Estrutura funcional descrita no trabalho.</figcaption>
-      </figure>
-    </section>
-
-    <section class="section execution-section" id="execucao">
-      <div class="section-heading">
-        <p class="eyebrow">Ambiente e publicação</p>
-        <h2>Como o protótipo foi executado</h2>
-        <p>O desenvolvimento e os testes descritos no TCC ocorreram localmente em um notebook pessoal. O arquivo <code>app.py</code> foi iniciado pelo terminal com <code>streamlit run app.py</code>, e a interface foi acessada pelo navegador.</p>
-      </div>
-      <div class="limits-grid">
-        <article><strong>Núcleo do sistema</strong><p>Python reúne as regras; Streamlit apresenta as telas; pandas organiza os dados; e SQLite mantém as operações e o histórico no arquivo local <code>kanban_logistico.db</code>.</p></article>
-        <article><strong>JavaScript e Excel</strong><p>JavaScript é usado somente nesta página. Excel não faz parte da execução do protótipo, mas pode abrir os arquivos CSV exportados.</p></article>
-        <article><strong>Publicação acadêmica</strong><p>O repositório contém a página e o PDF revisado. O código operacional do protótipo não integra a publicação pública.</p></article>
-      </div>
-      <p class="repo-link"><a class="button secondary" href="https://github.com/DecioRici/LGPD-Site/tree/main/tcc" target="_blank" rel="noopener">Ver arquivos no GitHub</a></p>
-    </section>
-
-    <section class="section" id="validacao">
-      <div class="section-heading">
-        <p class="eyebrow">Validação funcional</p>
-        <h2>Oito cenários verificados</h2>
-        <p>A rotina de validação utilizou quatro operações simuladas. O objetivo foi verificar o comportamento das funções, e não medir desempenho de uma empresa real.</p>
-      </div>
-      <div class="validation-grid">
-        <span>Cadastro <b>Atendido</b></span>
-        <span>Avanço de etapa <b>Atendido</b></span>
-        <span>Retorno de etapa <b>Atendido</b></span>
-        <span>Cancelamento lógico <b>Atendido</b></span>
-        <span>Filtros <b>Atendido</b></span>
-        <span>Indicadores <b>Atendido</b></span>
-        <span>Análise operacional <b>Atendido</b></span>
-        <span>Exportação em CSV <b>Atendido</b></span>
-      </div>
-      <figure class="dashboard-shot">
-        <img src="assets/dashboard-simulado.png" alt="Dashboard do protótipo com quatro registros simulados">
-        <figcaption>Dashboard operacional com dados simulados utilizados na validação.</figcaption>
-      </figure>
-    </section>
-
-    <section class="section limits-section" id="limites">
-      <div class="section-heading">
-        <p class="eyebrow">Interpretação correta</p>
-        <h2>O que o trabalho demonstra</h2>
-      </div>
-      <div class="limits-grid">
-        <article><strong>Demonstra</strong><p>Que o protótipo executa cadastro, movimentação, histórico, filtros, indicadores, análise por etapa e exportação.</p></article>
-        <article><strong>Não demonstra</strong><p>Redução de filas, tempo, custos, mão de obra ou aumento de produtividade, pois não houve implantação real.</p></article>
-        <article><strong>Próxima etapa</strong><p>Aplicar o sistema em um pátio real, definir referências por etapa e comparar indicadores antes e depois.</p></article>
+    <section class="view" id="view-database">
+      <div class="panel">
+        <div class="section-title"><div><h2>Base de dados</h2><p>Dados armazenados neste navegador.</p></div><button class="btn danger" id="clear-data">Limpar dados locais</button></div>
+        <div class="table-wrap"><table><thead><tr><th>Pedido</th><th>Placa</th><th>Motorista</th><th>Transportadora</th><th>Produto</th><th>Quantidade</th><th>Operação</th><th>Frete</th><th>Agendamento</th><th>Status</th></tr></thead><tbody id="database-body"></tbody></table></div>
       </div>
     </section>
   </main>
 
+  <dialog id="record-dialog">
+    <form id="record-form">
+      <div class="dialog-head"><div><p class="eyebrow">Cadastro operacional</p><h2>Novo caminhão</h2></div><button type="button" class="icon-button" id="close-dialog" aria-label="Fechar">×</button></div>
+      <div class="form-grid">
+        <label>Pedido ou romaneio*<input name="order" required></label>
+        <label>Placa*<input name="plate" required maxlength="8" placeholder="ABC1D23"></label>
+        <label>Motorista*<input name="driver" required></label>
+        <label>CPF<input name="cpf" inputmode="numeric"></label>
+        <label>Transportadora*<input name="carrier" required></label>
+        <label>Produto*<input name="product" required></label>
+        <label>Quantidade*<input name="quantity" type="number" min="0.01" step="0.01" required></label>
+        <label>Unidade<select name="unit"><option>kg</option><option>t</option><option>un</option><option>m³</option></select></label>
+        <label>Operação<select name="operation"><option>Carga</option><option>Descarga</option></select></label>
+        <label>Frete<select name="freight"><option>CIF</option><option>FOB</option><option>Próprio</option></select></label>
+        <label>Data do agendamento*<input name="date" type="date" required></label>
+        <label>Hora*<input name="time" type="time" required></label>
+        <label class="wide">Observação<textarea name="notes" rows="3"></textarea></label>
+      </div>
+      <p class="form-note">Os dados ficam salvos somente no navegador deste dispositivo.</p>
+      <div class="dialog-actions"><button type="button" class="btn" id="cancel-dialog">Cancelar</button><button class="btn primary" type="submit">Cadastrar caminhão</button></div>
+    </form>
+  </dialog>
+
+  <template id="empty-template"><div class="empty"><strong>Nenhum caminhão</strong><span>Cadastre um registro ou carregue os exemplos simulados.</span></div></template>
+
   <footer>
-    <p>Décio Rici Neto · Trabalho de Conclusão de Curso · 2026</p>
-    <a href="documentos/TCC_Decio_Rici_V6_FINAL.pdf" target="_blank" rel="noopener">Documento completo</a>
+    <span>Protótipo acadêmico · Dados armazenados localmente</span>
+    <a href="https://github.com/DecioRici/LGPD-Site/tree/main/tcc" target="_blank" rel="noopener">Código no GitHub</a>
   </footer>
-  <script src="script.js"></script>
+  <script src="kanban.js"></script>
 </body>
 </html>

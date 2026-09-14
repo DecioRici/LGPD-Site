@@ -1,41 +1,34 @@
-# Sistema Kanban digital para pátio logístico
+# Kanban Logístico
 
-Página acadêmica do Trabalho de Conclusão de Curso de Décio Rici Neto, apresentado ao curso de Engenharia de Produção do UNISAGRADO em 2026.
+Aplicação web funcional vinculada ao Trabalho de Conclusão de Curso de Décio Rici Neto, Engenharia de Produção, UNISAGRADO, 2026.
 
-## Objetivo
-
-Desenvolver um protótipo funcional de sistema Kanban digital em Python para apoiar o controle operacional de caminhões em pátio logístico.
-
-## Escopo da pesquisa
-
-- fluxo visual com sete etapas, do agendamento à liberação;
-- cadastro operacional e movimentação de cards;
-- histórico de origem, destino, ação e horário;
-- filtros, indicadores, análise por etapa e exportação em CSV;
-- validação funcional com quatro operações simuladas;
-- nenhuma identificação de empresa ou dado operacional real.
-
-## Tecnologias do protótipo
-
-- Python para regras, consultas, movimentações e indicadores;
-- Streamlit para a interface;
-- pandas para organização tabular;
-- SQLite para armazenamento local.
-
-JavaScript é utilizado somente nesta página de apresentação. Excel não é necessário para executar o protótipo, mas pode abrir os arquivos CSV exportados. O código operacional do protótipo não integra esta publicação.
-
-## Interpretação dos resultados
-
-Os testes funcionais atenderam aos cenários de cadastro, avanço, retorno, cancelamento lógico, filtros, indicadores, análise operacional e exportação. Como a validação utilizou dados simulados e não houve implantação real, o trabalho não afirma redução de filas, custos, mão de obra ou tempo de permanência.
-
-## Página publicada
+## Abrir
 
 https://lgpd-site-mocha.vercel.app/tcc/
 
-## Execução local da página
+## Funções disponíveis
 
-```bash
-python -m http.server 8000
-```
+- cadastro de caminhões;
+- quadro Kanban com sete etapas;
+- avanço e retorno de etapa;
+- cancelamento lógico;
+- histórico das movimentações;
+- filtros por texto, operação e frete;
+- indicadores e análise por etapa;
+- exportação da base em CSV;
+- quatro registros simulados para validação.
 
-Depois, acesse `http://localhost:8000/tcc/`.
+## Armazenamento
+
+A versão pública armazena os registros no localStorage do navegador. Nenhuma informação é enviada a servidor. Use somente dados fictícios ou autorizados.
+
+## Relação com o TCC
+
+O TCC descreve o protótipo original desenvolvido em Python, Streamlit, pandas e SQLite. Esta publicação em HTML, CSS e JavaScript reproduz as principais funções para permitir a demonstração diretamente pelo navegador. Os quatro registros carregados automaticamente são simulados e não representam uma empresa real.
+
+## Arquivos
+
+- index.html: estrutura da aplicação;
+- kanban.css: interface e responsividade;
+- kanban.js: cadastro, fluxo, histórico, filtros, indicadores, armazenamento local e exportação;
+- documentos/TCC_Decio_Rici_V6_FINAL.pdf: trabalho acadêmico revisado.
