@@ -1,26 +1,35 @@
-# Gestão de Fluxo Logístico
+# FluxoDock
 
-Aplicação web para controle de veículos e acompanhamento das etapas de uma operação de pátio.
+Sistema de controle de veículos e operações de pátio logístico.
+
+## Aplicações
+
+- **Versão web:** HTML, CSS e JavaScript, executada diretamente no navegador.
+- **Protótipo acadêmico:** Python, Streamlit, pandas e SQLite, executado localmente.
 
 ## Acesso
 
-https://lgpd-site-mocha.vercel.app/
+https://lgpd-site-mocha.vercel.app/fluxodock/
 
 ## Recursos
 
 - cadastro e edição de veículos;
-- fluxo Kanban com sete etapas operacionais;
-- avanço, retorno e cancelamento lógico;
+- quadro Kanban com sete etapas;
+- avanço, retorno, movimentação direta e cancelamento lógico;
 - histórico de movimentações;
-- filtros por etapa, operação e modalidade de frete;
-- indicadores de quantidade e permanência;
-- exportação dos registros em CSV;
-- conjunto opcional de dados fictícios para demonstração.
+- filtros operacionais;
+- indicadores por etapa, operação e modalidade de frete;
+- exportação CSV.
 
-## Tecnologias
+## Executar a versão Python
 
-A versão web utiliza HTML, CSS e JavaScript. Os registros são armazenados no localStorage do navegador e não são enviados a um servidor.
+```bash
+pip install -r requirements.txt
+streamlit run app.py
+```
 
-## Uso responsável
+O banco `kanban_logistico.db` é criado localmente na primeira execução.
 
-Utilize somente dados fictícios ou informações cujo tratamento esteja autorizado. Ao limpar os dados do navegador, os registros locais são removidos.
+## Privacidade
+
+Não publique dados pessoais, credenciais ou registros operacionais sem autorização.
