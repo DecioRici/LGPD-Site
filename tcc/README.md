@@ -1,4 +1,4 @@
-# FluxoDock
+# Controle de Pátio Logístico
 
 Sistema de controle de veículos e operações de pátio logístico.
 
@@ -9,7 +9,7 @@ Sistema de controle de veículos e operações de pátio logístico.
 
 ## Acesso
 
-https://lgpd-site-mocha.vercel.app/fluxodock/
+https://lgpd-site-mocha.vercel.app/controle-patio/
 
 ## Recursos
 
