@@ -122,7 +122,7 @@ $('#board').addEventListener('drop',e=>{
  const from=STAGES[r.stage];r.stage=target;r.stageEnteredAt=new Date().toISOString();
  logAction(r,from,STAGES[target],'Movimentação direta');save();render();notify('Veículo movido para '+STAGES[target]);
 });
-$$('.tab').forEach(tab=>tab.addEventListener('click',()=>{$$('.tab').forEach(x=>x.classList.toggle('active',x===tab));$$('.view').forEach(v=>v.classList.toggle('active',v.id==='view-'+tab.dataset.view));$('#filters').hidden=tab.dataset.view!=='kanban';$('#page-title').textContent={kanban:'Quadro operacional',dashboard:'Indicadores',history:'Histórico',database:'Base de registros'}[tab.dataset.view]}));
+$$('.tab').forEach(tab=>tab.addEventListener('click',()=>{$$('.tab').forEach(x=>x.classList.toggle('active',x===tab));$$('.view').forEach(v=>v.classList.toggle('active',v.id==='view-'+tab.dataset.view));$('#filters').hidden=tab.dataset.view!=='kanban';document.body.classList.toggle('field-view',tab.dataset.view==='field');$('#page-title').textContent={kanban:'Quadro operacional',dashboard:'Indicadores',history:'Histórico',database:'Base de registros',field:'Levantamento dos cinco caminhões'}[tab.dataset.view]}));
 ['#filter-text','#filter-stage','#filter-operation','#filter-freight'].forEach(id=>$(id).addEventListener(id==='#filter-text'?'input':'change',renderBoard));
 $('#clear-filters').addEventListener('click',()=>{$('#filter-text').value='';$('#filter-stage').value='';$('#filter-operation').value='';$('#filter-freight').value='';renderBoard()});
 $('#new-record').addEventListener('click',()=>openForm());

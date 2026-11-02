@@ -27,6 +27,7 @@
     <button class="tab" data-view="dashboard">Indicadores</button>
     <button class="tab" data-view="history">Histórico</button>
     <button class="tab" data-view="database">Registros</button>
+    <button class="tab" data-view="field">Levantamento</button>
   </nav>
 
   <main>
@@ -64,6 +65,24 @@
           <div class="table-wrap"><table><thead><tr><th>Etapa</th><th>Quantidade</th><th>Tempo médio</th><th>Maior tempo</th></tr></thead><tbody id="analysis-body"></tbody></table></div>
         </article>
       </div>
+    </section>
+
+    <section class="view" id="view-field">
+      <p class="field-context">Tempos aproximados registrados no levantamento presencial. Caminhões identificados por códigos para preservar os dados pessoais e empresariais.</p>
+      <ol class="field-flow" aria-label="Etapas do Kanban"><li>Agendado</li><li>Check-in</li><li>Aguardando no Pátio</li><li>Pesagem Inicial</li><li>Carregamento ou Descarga</li><li>Pesagem Final</li><li>Liberado</li></ol>
+      <div class="field-metrics" aria-label="Resumo dos cinco atendimentos">
+        <article><span>Caminhões acompanhados</span><strong id="field-count"></strong></article>
+        <article><span>Permanência média</span><strong id="field-average"></strong></article>
+        <article><span>Espera média pela balança</span><strong id="field-wait"></strong></article>
+        <article><span>Espera / permanência</span><strong id="field-share"></strong></article>
+      </div>
+      <article class="panel field-panel" id="field-table-panel">
+        <div class="panel-heading"><h3>Tempos por etapa</h3><button class="btn" id="field-export">Exportar levantamento CSV</button></div>
+        <div class="table-wrap"><table class="field-table"><caption>Durações em minutos</caption><thead><tr><th>Caminhão</th><th>Operação</th><th>Check-in</th><th>Espera pela balança</th><th>Pesagem inicial</th><th>Carga / descarga</th><th>Pesagem final</th><th>Total</th><th>Espera / total</th></tr></thead><tbody id="field-body"></tbody></table></div>
+        <p class="field-footnote">Agendado antecede a chegada. Liberado marca o encerramento. A permanência corresponde à soma das cinco durações.</p>
+      </article>
+      <h3 class="field-cards-title">Cartões dos atendimentos</h3>
+      <div id="field-cards" class="field-cards"></div>
     </section>
 
     <section class="view" id="view-history">
@@ -107,5 +126,6 @@
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <footer><span>Controle operacional de veículos</span><span>Dados mantidos neste dispositivo</span></footer>
   <script src="kanban.js"></script>
+  <script src="levantamento.js"></script>
 </body>
 </html>

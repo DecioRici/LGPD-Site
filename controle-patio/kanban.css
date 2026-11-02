@@ -140,3 +140,23 @@ footer{background:#123149;border-bottom-color:#f0b323}
 .truck-card.dragging{opacity:.45;cursor:grabbing}
 .column.drag-over{outline:3px solid var(--signal);outline-offset:-3px;background:#fff7df}
 .column.drag-over .card-list{background:#fffaf0}
+
+
+/* Levantamento de cinco atendimentos sem identificação pessoal */
+[hidden]{display:none!important}
+.field-view .metrics,.field-view .storage-status{display:none}
+.field-context{margin:0 0 16px;color:#53616a;max-width:95ch;font-size:.88rem}
+.field-flow{display:flex;flex-wrap:wrap;list-style:none;padding:0;margin:0 0 18px;gap:6px;counter-reset:step}
+.field-flow li{counter-increment:step;padding:8px 10px;color:#fff;border-radius:2px;background:#2f6fa5;font-size:.74rem;font-weight:700}
+.field-flow li::before{content:counter(step) '. ';opacity:.8}
+.field-flow li:nth-child(2){background:#168c9b}.field-flow li:nth-child(3){background:#946300}.field-flow li:nth-child(4){background:#6653a3}.field-flow li:nth-child(5){background:#b85515}.field-flow li:nth-child(6){background:#9b4674}.field-flow li:nth-child(7){background:#287653}
+.field-metrics{display:grid;grid-template-columns:repeat(4,1fr);background:#fff;border:1px solid var(--line);margin-bottom:18px}
+.field-metrics article{padding:15px 18px;border-right:1px solid var(--line)}.field-metrics article:last-child{border:0}
+.field-metrics span{display:block;color:var(--muted);font-size:.76rem}.field-metrics strong{display:block;margin-top:6px;color:#123149;font-size:1.6rem;font-variant-numeric:tabular-nums}
+.field-panel{padding:18px}.field-table caption{text-align:left;color:var(--muted);padding:0 0 8px;font-size:.76rem}
+.field-table tbody th{color:var(--ink);background:transparent;font-size:.8rem}.field-table td{font-variant-numeric:tabular-nums;text-align:right}.field-table td:nth-child(2){text-align:left}
+.field-footnote{color:var(--muted);font-size:.76rem;margin:14px 0 0}
+.field-cards-title{font-size:1rem;margin:24px 0 12px}.field-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(255px,1fr));gap:12px}
+.field-card{padding:17px;background:#fff;border:1px solid var(--line);border-top:4px solid #287653}.field-card h4{font-size:1.1rem;margin:0;color:#123149}.field-card .badge{font-size:.72rem}
+.field-card-subtitle{font-size:.72rem;color:var(--muted);margin:10px 0}.field-card dl{display:grid;grid-template-columns:1fr auto;gap:7px 12px;margin:0;font-size:.8rem}.field-card dd{margin:0;font-variant-numeric:tabular-nums;font-weight:700}.field-total{border-top:1px solid var(--line);padding-top:8px;font-weight:700}
+@media(max-width:700px){.field-metrics{grid-template-columns:1fr 1fr}.field-metrics article{border-bottom:1px solid var(--line)}.field-panel .panel-heading{align-items:flex-start;flex-direction:column}.field-flow li{font-size:.68rem}.field-cards{grid-template-columns:1fr}}
