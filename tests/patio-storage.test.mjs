@@ -18,6 +18,7 @@ const event = {
 };
 
 function setup() {
+  delete process.env.SUPABASE_BACKEND_TOKEN;
   process.env.SUPABASE_URL = 'https://database.example';
   process.env.SUPABASE_SERVICE_ROLE_KEY = key;
   process.env.KANBAN_ACCESS_PASSWORD = password;
@@ -135,6 +136,23 @@ test('base compartilhada, autenticação, conflitos e novas tentativas', async t
       ]) assert.equal((await request('state', 'PUT', payload, cookie)).code, 400);
     });
 
+    await t.test('função autenticada usa token privado sem expor a chave do projeto', async () => {
+      delete process.env.SUPABASE_SERVICE_ROLE_KEY;
+      process.env.SUPABASE_BACKEND_TOKEN = 'b'.repeat(64);
+      const bridgeCookie = await login();
+      globalThis.fetch = async (url, options) => {
+        assert.equal(new URL(url).pathname, '/functions/v1/patio-store');
+        assert.equal(options.headers['x-patio-backend-token'], 'b'.repeat(64));
+        assert.equal(options.headers.apikey, undefined);
+        return Response.json([{ revision: 0, records: [], history: [], last_mutation_id: null }]);
+      };
+      assert.deepEqual((await request('config')).body, { configured: true });
+      const result = await request('state', 'GET', null, bridgeCookie);
+      assert.equal(result.code, 200);
+      assert.ok(!JSON.stringify(result).includes('b'.repeat(64)));
+      setup();
+    });
+
     await t.test('falha no Supabase retorna erro sem detalhes privados', async () => {
       globalThis.fetch = async () => { throw new Error('secret database detail ' + key); };
       const result = await request('state', 'GET', null, cookie);
@@ -144,7 +162,7 @@ test('base compartilhada, autenticação, conflitos e novas tentativas', async t
     });
   } finally {
     globalThis.fetch = originalFetch;
-    for (const name of ['SUPABASE_URL', 'SUPABASE_SERVICE_ROLE_KEY', 'KANBAN_ACCESS_PASSWORD']) {
+    for (const name of ['SUPABASE_URL', 'SUPABASE_SERVICE_ROLE_KEY', 'SUPABASE_BACKEND_TOKEN', 'KANBAN_ACCESS_PASSWORD']) {
       if (originalEnvironment[name] === undefined) delete process.env[name];
       else process.env[name] = originalEnvironment[name];
     }

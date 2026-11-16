@@ -77,7 +77,8 @@ export default async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store');
   res.setHeader('X-Content-Type-Options', 'nosniff');
   const url = process.env.SUPABASE_URL;
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const bridgeToken = process.env.SUPABASE_BACKEND_TOKEN;
+  const key = bridgeToken || process.env.SUPABASE_SERVICE_ROLE_KEY;
   const password = process.env.KANBAN_ACCESS_PASSWORD;
   const action = new URL(req.url, 'https://localhost').searchParams.get('action') || 'state';
   const configured = Boolean(url && key && password);
@@ -128,9 +129,13 @@ export default async function handler(req, res) {
   }
   if (!authenticated(req, key, password)) return res.status(401).json({ error: 'Entre para acessar a base compartilhada.' });
   if (action !== 'state') return res.status(404).json({ error: 'Ação não encontrada.' });
-  const headers = { apikey: key, 'Content-Type': 'application/json' };
-  if (key.split('.').length === 3) headers.Authorization = 'Bearer ' + key;
-  const endpoint = url.replace(/\/$/, '') + '/rest/v1/patio_board';
+  const headers = { 'Content-Type': 'application/json' };
+  if (bridgeToken) headers['x-patio-backend-token'] = bridgeToken;
+  else {
+    headers.apikey = key;
+    if (key.split('.').length === 3) headers.Authorization = 'Bearer ' + key;
+  }
+  const endpoint = url.replace(/\/$/, '') + (bridgeToken ? '/functions/v1/patio-store' : '/rest/v1/patio_board');
   const select = 'id=eq.main&select=revision,records,history,last_mutation_id';
   async function database(method, query, data) {
     const result = await fetch(endpoint + '?' + query, {
