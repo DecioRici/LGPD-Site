@@ -22,14 +22,15 @@ select token as backend_token from material cross join saved;
 
 5. No painel do projeto Vercel que publica o site, abra Settings e depois Environment Variables. Cadastre as três variáveis abaixo para o ambiente em que vai usar o banco.
 6. Faça um novo deployment da versão que contém esta integração.
-7. Acesse `/controle-patio/`, entre com a senha escolhida e confira o indicador de base compartilhada.
+7. Acesse `/controle-patio/` e, quando o acesso público estiver desativado, entre com a senha escolhida e confira o indicador de base compartilhada.
 8. No navegador que contém os registros antigos, clique em **Importar deste navegador**. A importação acrescenta os códigos internos ausentes e preserva as versões que já estão no banco.
 
 | Variável na Vercel | Valor |
 | --- | --- |
 | `SUPABASE_URL` | URL HTTPS do projeto Supabase, disponível nas configurações de API. |
 | `SUPABASE_BACKEND_TOKEN` | Token privado de 64 caracteres gerado no passo 4. Permite acesso somente ao quadro pela função `patio-store`. |
-| `KANBAN_ACCESS_PASSWORD` | Senha de acesso ao quadro, com 16 a 256 caracteres. Use uma senha longa e exclusiva. |
+| `KANBAN_ACCESS_PASSWORD` | Senha do quadro, com 16 a 256 caracteres. Não é exigida quando o acesso público está ativado. |
+| `KANBAN_PUBLIC_ACCESS` | Defina como `true` para abrir o quadro sem senha. Qualquer visitante pode ler e alterar os registros; a interface oculta Entrar e Sair. |
 
 Cadastre o token somente nas variáveis privadas do servidor da Vercel, no ambiente de produção. A função `patio-store` utiliza as credenciais que o Supabase fornece ao próprio ambiente para acessar as tabelas; essas credenciais não são copiadas para a Vercel.
 

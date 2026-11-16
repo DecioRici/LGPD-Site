@@ -30,8 +30,8 @@ function lockStorageControls() {
   $('#sync-data').disabled = writeBusy;
   $('#cloud-logout').disabled = writeBusy || window.PatioStorage.hasPending();
   $('#sync-data').hidden = storageMode === 'local';
-  $('#cloud-login').hidden = storageMode !== 'cloud' || loggedIn;
-  $('#cloud-logout').hidden = storageMode !== 'cloud' || !loggedIn;
+  $('#cloud-login').hidden = window.PatioStorage.isPublic() || storageMode !== 'cloud' || loggedIn;
+  $('#cloud-logout').hidden = window.PatioStorage.isPublic() || storageMode !== 'cloud' || !loggedIn;
   $('#import-local').hidden = storageMode !== 'cloud' || !loggedIn ||
     !(read(STORE, []).length || read(HISTORY, []).length);
 }
