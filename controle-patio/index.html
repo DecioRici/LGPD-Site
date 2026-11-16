@@ -33,7 +33,13 @@
   <main>
     <section class="page-heading">
       <div><h2 id="page-title">Quadro operacional</h2></div>
-      <p class="storage-status"><i></i> Dados salvos neste navegador</p>
+      <div class="storage-tools">
+        <p class="storage-status" id="storage-status" role="status">Conectando...</p>
+        <button class="text-button" id="sync-data" hidden>Sincronizar</button>
+        <button class="text-button" id="import-local" hidden>Importar deste navegador</button>
+        <button class="text-button" id="cloud-login" hidden>Entrar</button>
+        <button class="text-button" id="cloud-logout" hidden>Sair</button>
+      </div>
     </section>
 
     <section class="metrics" aria-label="Indicadores principais">
@@ -98,33 +104,44 @@
     </section>
   </main>
 
+  <dialog id="login-dialog">
+    <form id="login-form">
+      <div class="dialog-head"><h2>Base compartilhada</h2></div>
+      <p>Digite a senha de acesso do Kanban.</p>
+      <label>Senha<input id="cloud-password" name="password" type="password" autocomplete="current-password" required maxlength="256"></label>
+      <p id="login-error" role="alert"></p>
+      <div class="dialog-actions"><span>Registros compartilhados entre os usuários autorizados.</span><button class="btn primary" type="submit">Entrar</button></div>
+    </form>
+  </dialog>
+
   <dialog id="record-dialog">
     <form id="record-form">
       <input type="hidden" name="recordId">
       <div class="dialog-head"><div><h2 id="dialog-title">Cadastrar veículo</h2></div><button type="button" class="icon-button" id="close-dialog" aria-label="Fechar">×</button></div>
       <div class="form-section"><h3>Identificação</h3><div class="form-grid">
-        <label>Pedido ou romaneio*<input name="order" required></label>
+        <label>Pedido ou romaneio*<input name="order" required maxlength="200"></label>
         <label>Placa*<input name="plate" required maxlength="8" placeholder="ABC1D23" autocomplete="off"></label>
-        <label>Motorista*<input name="driver" required></label>
-        <label>CPF<input name="cpf" inputmode="numeric" placeholder="Somente números"></label>
-        <label>Transportadora*<input name="carrier" required></label>
+        <label>Motorista*<input name="driver" required maxlength="200"></label>
+        <label>CPF<input name="cpf" maxlength="20" inputmode="numeric" placeholder="Somente números"></label>
+        <label>Transportadora*<input name="carrier" required maxlength="200"></label>
       </div></div>
       <div class="form-section"><h3>Operação</h3><div class="form-grid">
-        <label>Produto*<input name="product" required></label>
+        <label>Produto*<input name="product" required maxlength="200"></label>
         <label>Quantidade*<input name="quantity" type="number" min="0.01" step="0.01" required></label>
         <label>Unidade<select name="unit"><option>kg</option><option>t</option><option>un</option><option>m³</option></select></label>
         <label>Operação<select name="operation"><option>Carga</option><option>Descarga</option></select></label>
         <label>Frete<select name="freight"><option>CIF</option><option>FOB</option><option>Próprio</option></select></label>
         <label>Data do agendamento*<input name="date" type="date" required></label>
         <label>Hora*<input name="time" type="time" required></label>
-        <label class="wide">Observação<textarea name="notes" rows="3" placeholder="Informações adicionais da operação"></textarea></label>
+        <label class="wide">Observação<textarea name="notes" maxlength="2000" rows="3" placeholder="Informações adicionais da operação"></textarea></label>
       </div></div>
       <div class="dialog-actions"><span>Campos com * são obrigatórios</span><div><button type="button" class="btn" id="cancel-dialog">Cancelar</button><button class="btn primary" type="submit">Salvar registro</button></div></div>
     </form>
   </dialog>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
-  <footer><span>Controle operacional de veículos</span><span>Dados mantidos neste dispositivo</span></footer>
+  <footer><span>Controle operacional de veículos</span><span id="storage-footer">Conectando ao armazenamento</span></footer>
+  <script src="storage.js"></script>
   <script src="kanban.js"></script>
   <script src="levantamento.js"></script>
 </body>
