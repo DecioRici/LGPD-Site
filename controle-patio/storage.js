@@ -4,6 +4,7 @@ window.PatioStorage = (() => {
   const endpoint = '/api/patio';
   const pendingKey = 'controle-patio-cloud-pending-v1';
   let pending = null;
+  let publicAccess = false;
   try {
     const saved = JSON.parse(sessionStorage.getItem(pendingKey));
     if (saved && typeof saved.mutationId === 'string') pending = saved;
@@ -31,6 +32,7 @@ window.PatioStorage = (() => {
     try {
       const data = await request('config');
       if (typeof data.configured !== 'boolean') throw new Error('Resposta de configuração inválida.');
+      publicAccess = data.publicAccess === true;
       return data.configured ? 'cloud' : 'local';
     } catch (error) {
       // A página também pode ser aberta em um servidor estático sem a API.
@@ -67,6 +69,7 @@ window.PatioStorage = (() => {
 
   return {
     configuration,
+    isPublic: () => publicAccess,
     load: () => request('state'),
     save,
     retry,

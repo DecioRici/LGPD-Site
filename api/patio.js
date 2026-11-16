@@ -80,16 +80,17 @@ export default async function handler(req, res) {
   const bridgeToken = process.env.SUPABASE_BACKEND_TOKEN;
   const key = bridgeToken || process.env.SUPABASE_SERVICE_ROLE_KEY;
   const password = process.env.KANBAN_ACCESS_PASSWORD;
+  const publicAccess = process.env.KANBAN_PUBLIC_ACCESS === 'true';
   const action = new URL(req.url, 'https://localhost').searchParams.get('action') || 'state';
-  const configured = Boolean(url && key && password);
+  const configured = Boolean(url && key && (publicAccess || password));
   if (req.method === 'GET' && action === 'config') {
-    if ((url || key || password) && !configured) {
+    if ((url || key || password || publicAccess) && !configured) {
       return res.status(503).json({ error: 'A configuração do banco está incompleta.' });
     }
-    return res.status(200).json({ configured });
+    return res.status(200).json(publicAccess ? { configured, publicAccess: true } : { configured });
   }
   if (!configured) return res.status(503).json({ error: 'Banco de dados ainda não configurado.' });
-  if (!/^https:\/\//.test(url) || password.length < 16 || password.length > 256) {
+  if (!/^https:\/\//.test(url) || (!publicAccess && (password.length < 16 || password.length > 256))) {
     return res.status(503).json({ error: 'Confira a URL do banco e use uma senha de pelo menos 16 caracteres.' });
   }
   if (!['GET', 'POST', 'PUT'].includes(req.method)) {
@@ -127,7 +128,7 @@ export default async function handler(req, res) {
     res.setHeader('Set-Cookie', COOKIE + '=; HttpOnly; Secure; SameSite=Strict; Path=/api/patio; Max-Age=0');
     return res.status(200).json({ ok: true });
   }
-  if (!authenticated(req, key, password)) return res.status(401).json({ error: 'Entre para acessar a base compartilhada.' });
+  if (!publicAccess && !authenticated(req, key, password)) return res.status(401).json({ error: 'Entre para acessar a base compartilhada.' });
   if (action !== 'state') return res.status(404).json({ error: 'Ação não encontrada.' });
   const headers = { 'Content-Type': 'application/json' };
   if (bridgeToken) headers['x-patio-backend-token'] = bridgeToken;

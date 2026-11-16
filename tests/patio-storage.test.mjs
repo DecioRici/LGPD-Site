@@ -18,6 +18,7 @@ const event = {
 };
 
 function setup() {
+  delete process.env.KANBAN_PUBLIC_ACCESS;
   delete process.env.SUPABASE_BACKEND_TOKEN;
   process.env.SUPABASE_URL = 'https://database.example';
   process.env.SUPABASE_SERVICE_ROLE_KEY = key;
@@ -136,6 +137,19 @@ test('base compartilhada, autenticação, conflitos e novas tentativas', async t
       ]) assert.equal((await request('state', 'PUT', payload, cookie)).code, 400);
     });
 
+    await t.test('acesso público lê e grava sem senha nem cookie, mantendo a verificação de origem', async () => {
+      process.env.KANBAN_PUBLIC_ACCESS = 'true';
+      delete process.env.KANBAN_ACCESS_PASSWORD;
+      const db = database({ revision: 0, records: [], history: [], last_mutation_id: null });
+      assert.deepEqual((await request('config')).body, { configured: true, publicAccess: true });
+      assert.equal((await request('state')).code, 200);
+      const payload = { revision: 0, records: [record], history: [event], mutationId: 'public-save' };
+      assert.equal((await request('state', 'PUT', payload)).code, 200);
+      assert.equal(db.state().records.length, 1);
+      assert.equal((await request('state', 'PUT', payload, null, { origin: 'https://outro.example' })).code, 403);
+      setup();
+    });
+
     await t.test('função autenticada usa token privado sem expor a chave do projeto', async () => {
       delete process.env.SUPABASE_SERVICE_ROLE_KEY;
       process.env.SUPABASE_BACKEND_TOKEN = 'b'.repeat(64);
@@ -162,7 +176,7 @@ test('base compartilhada, autenticação, conflitos e novas tentativas', async t
     });
   } finally {
     globalThis.fetch = originalFetch;
-    for (const name of ['SUPABASE_URL', 'SUPABASE_SERVICE_ROLE_KEY', 'SUPABASE_BACKEND_TOKEN', 'KANBAN_ACCESS_PASSWORD']) {
+    for (const name of ['SUPABASE_URL', 'SUPABASE_SERVICE_ROLE_KEY', 'SUPABASE_BACKEND_TOKEN', 'KANBAN_ACCESS_PASSWORD', 'KANBAN_PUBLIC_ACCESS']) {
       if (originalEnvironment[name] === undefined) delete process.env[name];
       else process.env[name] = originalEnvironment[name];
     }
