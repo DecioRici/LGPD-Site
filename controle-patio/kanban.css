@@ -160,3 +160,15 @@ footer{background:#123149;border-bottom-color:#f0b323}
 .field-card{padding:17px;background:#fff;border:1px solid var(--line);border-top:4px solid #287653}.field-card h4{font-size:1.1rem;margin:0;color:#123149}.field-card .badge{font-size:.72rem}
 .field-card-subtitle{font-size:.72rem;color:var(--muted);margin:10px 0}.field-card dl{display:grid;grid-template-columns:1fr auto;gap:7px 12px;margin:0;font-size:.8rem}.field-card dd{margin:0;font-variant-numeric:tabular-nums;font-weight:700}.field-total{border-top:1px solid var(--line);padding-top:8px;font-weight:700}
 @media(max-width:700px){.field-metrics{grid-template-columns:1fr 1fr}.field-metrics article{border-bottom:1px solid var(--line)}.field-panel .panel-heading{align-items:flex-start;flex-direction:column}.field-flow li{font-size:.68rem}.field-cards{grid-template-columns:1fr}}
+
+
+.storage-tools { display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 12px; }
+.storage-status[data-state="error"] { color: #b42318; }
+.storage-status[data-state="ready"] { color: #237450; }
+.storage-status[data-state="waiting"] { color: #9a6700; }
+#login-dialog { width: min(520px, calc(100% - 32px)); }
+#login-form { padding: 24px; }
+#login-form label { display: grid; gap: 8px; margin-top: 18px; }
+#login-form input { width: 100%; padding: 10px; box-sizing: border-box; }
+#login-error { min-height: 1.4em; color: #b42318; }
+body.storage-locked .truck-card { cursor: default; }
