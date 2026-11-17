@@ -6,13 +6,26 @@
   <meta name="theme-color" content="#123149">
   <meta name="description" content="Controle de Pátio Logístico: sistema de controle de veículos e operações de pátio">
   <title>Controle de Pátio Logístico</title>
-  <link rel="stylesheet" href="kanban.css">
+  <link rel="stylesheet" href="kanban.css?v=20261117-1">
 </head>
 <body>
+  <a class="skip-link" href="#main-content">Ir para o conteúdo</a>
+  <aside class="app-sidebar" aria-label="Menu principal">
+    <a class="sidebar-brand" href="./" aria-label="PatioFlow, início"><span class="brand-symbol" aria-hidden="true"><i></i><i></i><i></i></span><span><strong>PatioFlow</strong><small>Controle de pátio</small></span></a>
+    <p class="nav-caption">OPERAÇÃO</p>
+  <nav class="tabs" aria-label="Navegação do sistema">
+    <button class="tab active" data-view="kanban" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="5" height="16" rx="1"/><rect x="10" y="4" width="5" height="11" rx="1"/><rect x="17" y="4" width="4" height="14" rx="1"/></svg><span>Quadro operacional</span></button>
+    <button class="tab" data-view="dashboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4v16h16M8 16v-5m5 5V7m5 9v-8"/></svg><span>Indicadores</span></button>
+    <button class="tab" data-view="history"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10a9 9 0 1 1 2 8M3 4v6h6m3-3v5l3 2"/></svg><span>Histórico</span></button>
+    <button class="tab" data-view="database"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 9v11"/></svg><span>Registros</span></button>
+    <button class="tab" data-view="field"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V2h6v2M9 9h6m-6 4h6m-6 4h3"/></svg><span>Levantamento</span></button>
+  </nav>
+    <div class="sidebar-foot"><span class="sidebar-dot" aria-hidden="true"></span><span>Controle operacional<br><small>Entrada, atendimento e liberação</small></span></div>
+  </aside>
   <header class="app-header">
     <div class="identity">
-      <div class="mark" aria-hidden="true"><span></span><span></span><span></span></div>
-      <div><h1>Controle de Pátio Logístico</h1><p>Acompanhamento de veículos e etapas operacionais</p></div>
+      
+      <div><p class="header-eyebrow">GESTÃO OPERACIONAL</p><h1>Controle de pátio</h1></div>
     </div>
     <div class="header-actions">
       <div class="clock"><span id="current-date"></span><strong id="current-time"></strong></div>
@@ -22,17 +35,11 @@
     </div>
   </header>
 
-  <nav class="tabs" aria-label="Navegação do sistema">
-    <button class="tab active" data-view="kanban">Quadro operacional</button>
-    <button class="tab" data-view="dashboard">Indicadores</button>
-    <button class="tab" data-view="history">Histórico</button>
-    <button class="tab" data-view="database">Registros</button>
-    <button class="tab" data-view="field">Levantamento</button>
-  </nav>
 
-  <main>
+
+  <main id="main-content" tabindex="-1">
     <section class="page-heading">
-      <div><h2 id="page-title">Quadro operacional</h2></div>
+      <div><h2 id="page-title">Quadro operacional</h2><p class="page-description" id="page-description">Acompanhe os veículos em cada etapa do atendimento.</p></div>
       <div class="storage-tools">
         <p class="storage-status" id="storage-status" role="status">Conectando...</p>
         <button class="text-button" id="sync-data" hidden>Sincronizar</button>
@@ -59,7 +66,8 @@
     </section>
 
     <section class="view active" id="view-kanban">
-      <div class="board" id="board" aria-label="Etapas do fluxo operacional"></div>
+      <div class="board-tools"><span>Etapas do atendimento <small>· Arraste um cartão ou use Avançar e Retornar</small></span><div><button id="board-prev" class="board-scroll" aria-label="Ver etapas anteriores" type="button">←</button><button id="board-next" class="board-scroll" aria-label="Ver próximas etapas" type="button">→</button></div></div>
+      <div class="board" id="board" tabindex="0" aria-label="Etapas do fluxo operacional, use as setas para navegar"></div>
     </section>
 
     <section class="view" id="view-dashboard">
@@ -144,5 +152,6 @@
   <script src="storage.js"></script>
   <script src="kanban.js"></script>
   <script src="levantamento.js"></script>
+  <script src="interface.js?v=20261117-1"></script>
 </body>
 </html>
