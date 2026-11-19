@@ -209,6 +209,7 @@ function card(r){
  return '<article draggable="true" data-record-id="'+esc(r.id)+'" class="truck-card'+(alert?' overdue':'')+'"><div class="card-top"><h4>'+esc(r.plate)+'</h4><span class="badge">'+esc(r.operation)+'</span></div>'+
  '<dl><dt>Pedido</dt><dd>'+esc(r.order)+'</dd><dt>Motorista</dt><dd>'+esc(r.driver)+'</dd><dt>Transportadora</dt><dd>'+esc(r.carrier)+'</dd><dt>Produto</dt><dd>'+esc(r.product)+'</dd><dt>Quantidade</dt><dd>'+esc(r.quantity)+' '+esc(r.unit)+'</dd><dt>Agendado</dt><dd>'+esc(r.date.split('-').reverse().join('/'))+' '+esc(r.time)+'</dd></dl>'+
  '<p class="elapsed'+(alert?' alert':'')+'">'+(alert?'Agendamento vencido · ':'Na etapa há ')+duration(Date.now()-new Date(r.stageEnteredAt).getTime())+'</p>'+
+ ([2,4].includes(r.stage)?'<button class="call-whatsapp" data-action="whatsapp" data-id="'+esc(r.id)+'">Chamar para a balança</button>':'')+
  '<div class="card-actions">'+(r.stage>0?'<button data-action="back" data-id="'+esc(r.id)+'">← Retornar</button>':'')+(r.stage<6?'<button data-action="next" data-id="'+esc(r.id)+'">Avançar →</button>':'<button disabled>Finalizado</button>')+'<button class="icon-action" data-action="edit" data-id="'+esc(r.id)+'" title="Editar">✎</button><button class="icon-action cancel" data-action="cancel" data-id="'+esc(r.id)+'" title="Cancelar">×</button></div></article>';
 }
 function renderBoard(){
@@ -266,7 +267,7 @@ async function loadExamples(){
  }, 'Dados de teste carregados');
 }
 $('#filter-stage').innerHTML+=[...STAGES].map((s,i)=>'<option value="'+i+'">'+s+'</option>').join('');
-$('#board').addEventListener('click',e=>{const b=e.target.closest('button[data-action]');if(!b)return;({next:()=>move(b.dataset.id,1),back:()=>move(b.dataset.id,-1),edit:()=>editRecord(b.dataset.id),cancel:()=>cancelRecord(b.dataset.id)})[b.dataset.action]?.()});
+$('#board').addEventListener('click',e=>{const b=e.target.closest('button[data-action]');if(!b)return;({whatsapp:()=>{const r=records.find(x=>x.id===b.dataset.id);if(r&&!r.cancelled&&[2,4].includes(r.stage))window.PatioWhatsApp.open(r)},next:()=>move(b.dataset.id,1),back:()=>move(b.dataset.id,-1),edit:()=>editRecord(b.dataset.id),cancel:()=>cancelRecord(b.dataset.id)})[b.dataset.action]?.()});
 $('#database-body').addEventListener('click',e=>{const b=e.target.closest('[data-edit]');if(b)editRecord(b.dataset.edit)});
 let draggedId=null;
 $('#board').addEventListener('dragstart',e=>{
@@ -310,6 +311,9 @@ $('#record-form').addEventListener('submit', async event => {
   const data = Object.fromEntries(new FormData(form).entries());
   data.plate = normalizePlate(data.plate);
   data.quantity = Number(data.quantity);
+  const rawPhone = data.whatsapp;
+  data.whatsapp = window.PatioWhatsApp.normalizePhone(rawPhone);
+  if (rawPhone.trim() && !data.whatsapp) { notify("Informe um WhatsApp válido com DDD."); return; }
   const id = data.recordId;
   delete data.recordId;
   const saved = await performChange(() => {
@@ -392,8 +396,8 @@ window.addEventListener('beforeunload', event => {
   }
 });
 $('#export-csv').addEventListener('click',()=>{
- const cols=['pedido','placa','motorista','cpf','transportadora','produto','quantidade','unidade','operação','frete','agendamento','status','observação'];
- const rows=records.map(r=>[r.order,r.plate,r.driver,r.cpf,r.carrier,r.product,r.quantity,r.unit,r.operation,r.freight,r.date+' '+r.time,r.cancelled?'Cancelado':STAGES[r.stage],r.notes]);
+ const cols=['pedido','placa','motorista','whatsapp','cpf','transportadora','produto','quantidade','unidade','operação','frete','agendamento','status','observação'];
+ const rows=records.map(r=>[r.order,r.plate,r.driver,r.whatsapp || "",r.cpf,r.carrier,r.product,r.quantity,r.unit,r.operation,r.freight,r.date+' '+r.time,r.cancelled?'Cancelado':STAGES[r.stage],r.notes]);
  const csv=[cols,...rows].map(row=>row.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(';')).join('\n');
  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'}));a.download='controle_patio_'+new Date().toISOString().slice(0,10)+'.csv';a.click();URL.revokeObjectURL(a.href);notify('Arquivo CSV gerado');
 });
@@ -402,7 +406,8 @@ setInterval(updateClock, 30000);
 render();
 initializeStorage();
 setInterval(() => {
-  if (storageMode === 'cloud' && loggedIn && !writeBusy && !window.PatioStorage.hasPending() && !dialog.open && !document.hidden) syncCloud();
+  if (storageMode === 'cloud' && loggedIn && !writeBusy && !window.PatioStorage.hasPending() && !dialog.open && !window.PatioWhatsApp.isOpen() && !document.hidden) syncCloud();
 }, 10000);
 setInterval(() => { if (!writeBusy) render(); }, 60000);
+
 
