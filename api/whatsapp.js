@@ -11,7 +11,8 @@ export default async function handler(req,res) {
       const check=await fetch('https://gate.whapi.cloud/health',{headers:{Authorization:'Bearer '+env.WHAPI_TOKEN,Accept:'application/json'},signal:AbortSignal.timeout(20000)});
       const health=await check.json();
       const connected=check.ok && health.status?.text==='AUTH';
-      return res.status(200).json({configured:connected,limit:100,message:connected?'WhatsApp conectado para envio direto.':'O Whapi.Cloud não confirmou a conexão. Confira o token e conecte o WhatsApp no painel do canal.'});
+      if(!connected) console.warn('whapi_health_status', {httpStatus:check.status,channelState:['NOT_INIT','INIT','LAUNCH','QR','AUTH','ERROR','SYNC_ERROR'].includes(health.status?.text)?health.status.text:'UNKNOWN'});
+      return res.status(200).json({configured:connected,limit:100,message:connected?'WhatsApp conectado para envio direto.':([401,403].includes(check.status)?'O Whapi.Cloud recusou o token. Confira o API Token do canal conectado.':'O Whapi.Cloud não confirmou a conexão. Confira o canal no painel do Whapi.')});
     } catch(error) {
       console.warn('whapi_health_failed', {name:error?.name,code:error?.cause?.code || error?.code || 'UNKNOWN'});
       return res.status(503).json({error:error?.name==='TimeoutError'?'O Whapi.Cloud não respondeu à verificação em 20 segundos. Tente novamente.':'Não foi possível verificar a conexão do Whapi.Cloud. Tente novamente.'});
