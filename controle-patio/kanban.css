@@ -172,3 +172,11 @@ footer{background:#123149;border-bottom-color:#f0b323}
 #login-form input { width: 100%; padding: 10px; box-sizing: border-box; }
 #login-error { min-height: 1.4em; color: #b42318; }
 body.storage-locked .truck-card { cursor: default; }
+#whatsapp-dialog { width: min(560px, calc(100% - 32px)); padding: 24px; }
+#whatsapp-dialog .dialog-head { padding: 0; }
+#whatsapp-recipient { overflow-wrap: anywhere; }
+#whatsapp-preview { background: #f4f6f8; border-left: 3px solid #237450; padding: 16px; line-height: 1.6; }
+#whatsapp-status { min-height: 3em; line-height: 1.5; }
+.call-whatsapp { width: 100%; margin-bottom: 8px; padding: 8px; color: #237450; background: white; border: 1px solid #237450; border-radius: 4px; cursor: pointer; }
+.call-whatsapp:disabled { opacity: .6; cursor: default; }
+

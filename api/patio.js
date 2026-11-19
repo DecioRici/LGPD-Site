@@ -40,7 +40,7 @@ function validState(body) {
     for (const field of ['order', 'plate', 'driver', 'carrier', 'product', 'unit', 'operation', 'freight', 'date', 'time']) {
       if (typeof record[field] !== 'string' || !record[field].trim() || record[field].length > 200) return false;
     }
-    if (typeof record.cpf !== 'string' || record.cpf.length > 20 ||
+    if ((record.whatsapp !== undefined && (typeof record.whatsapp !== 'string' || (record.whatsapp !== '' && !/^55[1-9]\d[2-9]\d{7,8}$/.test(record.whatsapp)))) || typeof record.cpf !== 'string' || record.cpf.length > 20 ||
         typeof record.notes !== 'string' || record.notes.length > 2000 ||
         !/^[A-Z0-9]{1,7}$/.test(record.plate) ||
         !Number.isFinite(record.quantity) || record.quantity <= 0 ||
@@ -171,3 +171,4 @@ export default async function handler(req, res) {
     return res.status(503).json({ error: 'Não foi possível acessar o banco. Confira a conexão e a configuração do Supabase.' });
   }
 }
+

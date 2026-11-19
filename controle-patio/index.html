@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#123149">
   <meta name="description" content="Controle de Pátio Logístico: sistema de controle de veículos e operações de pátio">
   <title>Controle de Pátio Logístico</title>
-  <link rel="stylesheet" href="kanban.css">
+  <link rel="stylesheet" href="kanban.css?v=20261119">
 </head>
 <body>
   <header class="app-header">
@@ -122,6 +122,7 @@
         <label>Pedido ou romaneio*<input name="order" required maxlength="200"></label>
         <label>Placa*<input name="plate" required maxlength="8" placeholder="ABC1D23" autocomplete="off"></label>
         <label>Motorista*<input name="driver" required maxlength="200"></label>
+        <label>WhatsApp do motorista<input name="whatsapp" type="tel" inputmode="tel" maxlength="25" placeholder="(14) 99999-9999" autocomplete="tel"></label>
         <label>CPF<input name="cpf" maxlength="20" inputmode="numeric" placeholder="Somente números"></label>
         <label>Transportadora*<input name="carrier" required maxlength="200"></label>
       </div></div>
@@ -139,10 +140,19 @@
     </form>
   </dialog>
 
+  <dialog id="whatsapp-dialog" aria-labelledby="whatsapp-title">
+    <div class="dialog-head"><h2 id="whatsapp-title">Chamar para a balança</h2><button type="button" class="icon-button" id="whatsapp-close" aria-label="Fechar">×</button></div>
+    <p id="whatsapp-recipient"></p>
+    <p id="whatsapp-preview"></p>
+    <p id="whatsapp-status" role="status" aria-live="polite"></p>
+    <div class="dialog-actions"><button type="button" class="btn" id="whatsapp-cancel">Fechar</button><button type="button" class="btn primary" id="whatsapp-send" disabled>Enviar chamada</button></div>
+  </dialog>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <footer><span>Controle operacional de veículos</span><span id="storage-footer">Conectando ao armazenamento</span></footer>
   <script src="storage.js"></script>
-  <script src="kanban.js"></script>
+  <script src="whatsapp.js?v=20261119"></script>
+  <script src="kanban.js?v=20261119"></script>
   <script src="levantamento.js"></script>
 </body>
 </html>
+
