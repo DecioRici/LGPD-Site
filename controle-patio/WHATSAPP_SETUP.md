@@ -17,6 +17,8 @@ Mensagem enviada:
 
 O envio usa o telefone salvo no cadastro atual do veículo. Não é necessário autorizar cada motorista nas variáveis da Vercel: o banco exige a correspondência exata do telefone, veículo e etapa.
 
-O banco limita a demonstração a 5 destinatários diferentes e 100 tentativas, inclusive falhas e resultados incertos. O limite não reinicia com recarga ou deployment. Repetir o clique não dispara novamente a mesma chamada por veículo/entrada na etapa. Não há reenvio automático após falha ou timeout.
+Não há limite de demonstração imposto pelo site. O plano contratado no Whapi.Cloud continua determinando as condições do fornecedor. O site não contrata nem altera assinaturas.
 
-A resposta positiva da API confirma aceitação do envio; não comprova entrega ou leitura. A chamada não movimenta o cartão. Webhooks de recebimento e entrega não estão configurados. Nenhuma assinatura ou compra é ativada pelo site. O Sandbox do fornecedor tem limites próprios, incluindo até 5 conversas por mês e 150 mensagens por dia; confira os limites atuais no painel.
+Após o envio, o sistema mostra “Mensagem enviada” e libera “Chamar novamente” após 1 minuto. O intervalo vale também ao recarregar a página ou abrir o mesmo veículo em outro navegador. Cada tentativa tem um identificador próprio: repetir a mesma requisição não envia a mensagem duas vezes. Uma nova chamada deliberada após o intervalo usa outro identificador.
+
+A confirmação de envio não representa confirmação de entrega ou leitura. A chamada não movimenta o cartão. Webhooks de recebimento e entrega não estão configurados.
