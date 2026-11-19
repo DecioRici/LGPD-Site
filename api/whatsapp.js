@@ -5,14 +5,23 @@ export default async function handler(req,res) {
   res.setHeader('X-Content-Type-Options','nosniff');
   const env=process.env;
   const configured=Boolean(env.WHAPI_TOKEN && env.SUPABASE_URL && env.SUPABASE_BACKEND_TOKEN);
+  const ledger=async(data)=>{
+    const result=await fetch(env.SUPABASE_URL.replace(/\/$/,'')+'/functions/v1/patio-whatsapp',{method:'POST',headers:{'Content-Type':'application/json','x-patio-backend-token':env.SUPABASE_BACKEND_TOKEN},body:JSON.stringify(data),signal:AbortSignal.timeout(12000)});
+    const value=await result.json();
+    if(!result.ok) {const error=new Error(value.error || 'Não foi possível registrar a chamada.');error.status=result.status;error.retryAfter=value.retryAfter;throw error;}
+    return value;
+  };
   if(req.method==='GET') {
-    if(!configured) return res.status(200).json({configured:false,limit:100,message:'Envio indisponível: configure a conexão do Whapi.Cloud.'});
+    if(!configured) return res.status(200).json({configured:false,message:'Envio indisponível: configure a conexão do Whapi.Cloud.'});
     try {
+      const recordId=new URL(req.url || '/api/whatsapp','https://localhost').searchParams.get('recordId');
+      if(recordId && !ID.test(recordId)) return res.status(400).json({error:'Registro inválido.'});
+      const last=recordId?await ledger({action:'status',recordId}):{retryAfter:0,lastStatus:null};
       const check=await fetch('https://gate.whapi.cloud/health',{headers:{Authorization:'Bearer '+env.WHAPI_TOKEN,Accept:'application/json'},signal:AbortSignal.timeout(20000)});
       const health=await check.json();
       const connected=check.ok && health.status?.text==='AUTH';
       if(!connected) console.warn('whapi_health_status', {httpStatus:check.status,channelState:['NOT_INIT','INIT','LAUNCH','QR','AUTH','ERROR','SYNC_ERROR'].includes(health.status?.text)?health.status.text:'UNKNOWN'});
-      return res.status(200).json({configured:connected,limit:100,providerStatus:check.status,channelState:['NOT_INIT','INIT','LAUNCH','QR','AUTH','ERROR','SYNC_ERROR'].includes(health.status?.text)?health.status.text:'UNKNOWN',providerErrorCode:Number.isInteger(health.error?.code)?health.error.code:undefined,message:connected?'WhatsApp conectado para envio direto.':([401,403].includes(check.status)?'O Whapi.Cloud recusou o token. Confira o API Token do canal conectado.':'O Whapi.Cloud não confirmou a conexão. Confira o canal no painel do Whapi.')});
+      return res.status(200).json({configured:connected,retryAfter:last.retryAfter,lastStatus:last.lastStatus,providerStatus:check.status,channelState:['NOT_INIT','INIT','LAUNCH','QR','AUTH','ERROR','SYNC_ERROR'].includes(health.status?.text)?health.status.text:'UNKNOWN',providerErrorCode:Number.isInteger(health.error?.code)?health.error.code:undefined,message:connected?'WhatsApp conectado para envio direto.':([401,403].includes(check.status)?'O Whapi.Cloud recusou o token. Confira o API Token do canal conectado.':'O Whapi.Cloud não confirmou a conexão. Confira o canal no painel do Whapi.')});
     } catch(error) {
       console.warn('whapi_health_failed', {name:error?.name,code:error?.cause?.code || error?.code || 'UNKNOWN'});
       return res.status(503).json({error:error?.name==='TimeoutError'?'O Whapi.Cloud não respondeu à verificação em 20 segundos. Tente novamente.':'Não foi possível verificar a conexão do Whapi.Cloud. Tente novamente.'});
@@ -25,20 +34,14 @@ export default async function handler(req,res) {
   if(!configured) return res.status(503).json({error:'A conexão do Whapi.Cloud ainda não foi configurada no site.'});
   let body=req.body;
   try {if(typeof body==='string') body=JSON.parse(body);} catch {return res.status(400).json({error:'Conteúdo inválido.'});}
-  if(!body || !ID.test(body.recordId || '') || !PHONE.test(body.phone || '') || typeof body.stageAt!=='string' || body.stageAt.length>40) return res.status(400).json({error:'Confira o veículo e o WhatsApp com DDD.'});
-  const ledger=async(data)=>{
-    const result=await fetch(env.SUPABASE_URL.replace(/\/$/,'')+'/functions/v1/patio-whatsapp',{method:'POST',headers:{'Content-Type':'application/json','x-patio-backend-token':env.SUPABASE_BACKEND_TOKEN},body:JSON.stringify(data),signal:AbortSignal.timeout(12000)});
-    const value=await result.json();
-    if(!result.ok) {const error=new Error(value.error || 'Não foi possível registrar a chamada.');error.status=result.status;throw error;}
-    return value;
-  };
+  if(!body || !ID.test(body.recordId || '') || !ID.test(body.requestId || '') || !PHONE.test(body.phone || '') || typeof body.stageAt!=='string' || body.stageAt.length>40) return res.status(400).json({error:'Confira o veículo e o WhatsApp com DDD.'});
   let reservation;
   try {
-    reservation=await ledger({action:'reserve',recordId:body.recordId,phone:body.phone,stageAt:body.stageAt});
-  } catch(error) {return res.status(error.status || 503).json({error:error.message});}
+    reservation=await ledger({action:'reserve',recordId:body.recordId,phone:body.phone,stageAt:body.stageAt,requestId:body.requestId});
+  } catch(error) {if(error.retryAfter)res.setHeader('Retry-After',String(error.retryAfter));return res.status(error.status || 503).json({error:error.message,retryAfter:error.retryAfter});}
   if(reservation.existing) {
-    if(reservation.status==='submitted') return res.status(200).json({status:'submitted',duplicate:true,messageId:reservation.messageId});
-    return res.status(409).json({error:'Esta chamada já foi registrada. Confira o WhatsApp antes de tentar outro envio.'});
+    if(reservation.status==='submitted') return res.status(200).json({status:'submitted',duplicate:true,messageId:reservation.messageId,retryAfter:reservation.retryAfter});
+    return res.status(409).json({error:reservation.status==='reserved'?'Envio em processamento. Aguarde.':'Não foi possível confirmar o envio anterior. Confira o WhatsApp.',retryAfter:reservation.retryAfter});
   }
   let result, data;
   try {
@@ -51,15 +54,15 @@ export default async function handler(req,res) {
     data=await result.json();
   } catch {
     await ledger({action:'result',key:reservation.key,status:'unknown'}).catch(()=>{});
-    return res.status(502).json({error:'Não foi possível confirmar o envio. Confira o WhatsApp antes de fazer nova chamada.'});
+    return res.status(502).json({error:'Não foi possível confirmar o envio. Confira o WhatsApp antes de fazer nova chamada.',retryAfter:reservation.retryAfter});
   }
   const messageId=typeof data.message?.id==='string'?data.message.id:null;
   if(!result.ok || data.sent!==true) {
     await ledger({action:'result',key:reservation.key,status:'failed'}).catch(()=>{});
-    const errors={401:'Whapi.Cloud desconectado ou token inválido. Confira o canal remetente.',402:'O limite gratuito do Whapi.Cloud foi atingido.',403:'O Whapi.Cloud não autorizou este destinatário.',429:'O Whapi.Cloud recebeu muitas chamadas. Aguarde antes de uma nova chamada.'};
-    return res.status(502).json({error:errors[result.status] || 'O Whapi.Cloud não confirmou o envio. Confira a conexão e o número do destinatário.'});
+    const errors={401:'Whapi.Cloud desconectado ou token inválido. Confira o canal remetente.',402:'O serviço de WhatsApp não liberou o envio. Confira seu plano no Whapi.Cloud.',403:'O Whapi.Cloud não autorizou este destinatário.',429:'O Whapi.Cloud recebeu muitas chamadas. Aguarde antes de uma nova chamada.'};
+    return res.status(502).json({error:errors[result.status] || 'O Whapi.Cloud não confirmou o envio. Confira a conexão e o número do destinatário.',retryAfter:reservation.retryAfter});
   }
   try {await ledger({action:'result',key:reservation.key,status:'submitted',messageId});}
-  catch {return res.status(202).json({status:'submitted',messageId,warning:'A API aceitou a chamada, mas o registro final ficou pendente. Não repita o envio.'});}
-  return res.status(200).json({status:'submitted',messageId});
+  catch {return res.status(202).json({status:'submitted',messageId,retryAfter:reservation.retryAfter});}
+  return res.status(200).json({status:'submitted',messageId,retryAfter:reservation.retryAfter});
 }

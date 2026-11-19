@@ -30,8 +30,18 @@ export async function handleWhatsAppLedger(req) {
     const data=JSON.parse(raw);
     if(data.action==='reserve') {
       if(!/^[a-zA-Z0-9_-]{1,80}$/.test(data.recordId || '') || !/^55[1-9]\d[2-9]\d{7,8}$/.test(data.phone || '') || typeof data.stageAt!=='string' || data.stageAt.length>40) return json(400,{error:'Invalid payload'});
-      const result=await db('rpc/patio_reserve_whatsapp','POST',{p_record_id:data.recordId,p_phone:data.phone,p_stage_at:data.stageAt});
+      if(data.requestId!==undefined && !/^[a-zA-Z0-9_-]{1,80}$/.test(data.requestId)) return json(400,{error:'Invalid request ID'});
+      const result=data.requestId
+        ? await db('rpc/patio_reserve_whatsapp_call','POST',{p_record_id:data.recordId,p_phone:data.phone,p_stage_at:data.stageAt,p_request_id:data.requestId})
+        : await db('rpc/patio_reserve_whatsapp','POST',{p_record_id:data.recordId,p_phone:data.phone,p_stage_at:data.stageAt});
       return json(result.code || 200,result);
+    }
+    if(data.action==='status') {
+      if(!/^[a-zA-Z0-9_-]{1,80}$/.test(data.recordId || '')) return json(400,{error:'Invalid record ID'});
+      const rows=await db('patio_whatsapp_calls?record_id=eq.'+encodeURIComponent(data.recordId)+'&select=status,created_at&order=created_at.desc&limit=1');
+      const last=rows[0];
+      const retryAfter=last?Math.max(0,Math.ceil((Date.parse(last.created_at)+60000-Date.now())/1000)):0;
+      return json(200,{lastStatus:last?.status || null,retryAfter});
     }
     if(data.action==='result') {
       if(typeof data.key!=='string' || data.key.length>140 || !['submitted','failed','unknown'].includes(data.status) || (data.messageId && !/^[\w.=:/-]{1,500}$/.test(data.messageId))) return json(400,{error:'Invalid payload'});
