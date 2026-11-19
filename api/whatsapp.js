@@ -5,13 +5,21 @@ export default async function handler(req,res) {
   res.setHeader('X-Content-Type-Options','nosniff');
   const env=process.env;
   const allowed=(env.WHATSAPP_ALLOWED_RECIPIENTS || '').split(',').map(s=>s.trim()).filter(s=>PHONE.test(s));
-  const configured=Boolean(env.WHATSAPP_ACCESS_TOKEN && /^\d+$/.test(env.WHATSAPP_PHONE_NUMBER_ID || '') && /^[a-z0-9_]+$/.test(env.WHATSAPP_TEMPLATE_NAME || '') && allowed.length && env.SUPABASE_URL && env.SUPABASE_BACKEND_TOKEN);
-  if(req.method==='GET') return res.status(200).json({configured,limit:100,message:configured?'Envio direto pelo WhatsApp':'Envio indisponível: conecte o número remetente à API do WhatsApp.'});
+  const configured=Boolean(env.WHAPI_TOKEN && allowed.length && env.SUPABASE_URL && env.SUPABASE_BACKEND_TOKEN);
+  if(req.method==='GET') {
+    if(!configured) return res.status(200).json({configured:false,limit:100,message:'Envio indisponível: configure a conexão do Whapi.Cloud e os destinatários autorizados.'});
+    try {
+      const check=await fetch('https://gate.whapi.cloud/health',{headers:{Authorization:'Bearer '+env.WHAPI_TOKEN,Accept:'application/json'},signal:AbortSignal.timeout(8000)});
+      const health=await check.json();
+      const connected=check.ok && health.status?.text==='AUTH';
+      return res.status(200).json({configured:connected,limit:100,message:connected?'WhatsApp conectado para envio direto.':'O Whapi.Cloud não confirmou a conexão. Confira o token e conecte o WhatsApp no painel do canal.'});
+    } catch {return res.status(503).json({error:'Não foi possível verificar a conexão do Whapi.Cloud. Tente novamente.'});}
+  }
   if(req.method!=='POST') return res.status(405).json({error:'Método não permitido.'});
   let sameOrigin=false;
   try {sameOrigin=new URL(req.headers.origin).host===req.headers.host;} catch {}
   if(!sameOrigin || req.headers['sec-fetch-site']==='cross-site') return res.status(403).json({error:'Origem não permitida.'});
-  if(!configured) return res.status(503).json({error:'O número remetente ainda não foi conectado à API do WhatsApp.'});
+  if(!configured) return res.status(503).json({error:'A conexão do Whapi.Cloud ainda não foi configurada no site.'});
   let body=req.body;
   try {if(typeof body==='string') body=JSON.parse(body);} catch {return res.status(400).json({error:'Conteúdo inválido.'});}
   if(!body || !ID.test(body.recordId || '') || !PHONE.test(body.phone || '') || typeof body.stageAt!=='string' || body.stageAt.length>40) return res.status(400).json({error:'Confira o veículo e o WhatsApp com DDD.'});
@@ -32,9 +40,10 @@ export default async function handler(req,res) {
   }
   let result, data;
   try {
-    result=await fetch('https://graph.facebook.com/'+(env.WHATSAPP_API_VERSION || 'v27.0')+'/'+env.WHATSAPP_PHONE_NUMBER_ID+'/messages',{
-      method:'POST',headers:{Authorization:'Bearer '+env.WHATSAPP_ACCESS_TOKEN,'Content-Type':'application/json'},
-      body:JSON.stringify({messaging_product:'whatsapp',to:body.phone,type:'template',template:{name:env.WHATSAPP_TEMPLATE_NAME,language:{code:env.WHATSAPP_TEMPLATE_LANGUAGE || 'pt_BR'},components:[{type:'body',parameters:[{type:'text',text:reservation.driver},{type:'text',text:reservation.plate},{type:'text',text:reservation.stage===4?'pesagem final':'pesagem inicial'}]}]}}),
+    const weighing=reservation.stage===4?'pesagem final':'pesagem inicial';
+    result=await fetch('https://gate.whapi.cloud/messages/text',{
+      method:'POST',headers:{Authorization:'Bearer '+env.WHAPI_TOKEN,'Content-Type':'application/json',Accept:'application/json'},
+      body:JSON.stringify({to:body.phone,body:'Olá, '+reservation.driver+'. O caminhão de placa '+reservation.plate+' está sendo chamado para a '+weighing+'. Dirija-se à balança, por favor.'}),
       signal:AbortSignal.timeout(12000)
     });
     data=await result.json();
@@ -42,12 +51,13 @@ export default async function handler(req,res) {
     await ledger({action:'result',key:reservation.key,status:'unknown'}).catch(()=>{});
     return res.status(502).json({error:'Não foi possível confirmar o envio. Confira o WhatsApp antes de fazer nova chamada.'});
   }
-  const messageId=data.messages?.[0]?.id;
-  if(!result.ok || typeof messageId!=='string') {
+  const messageId=typeof data.message?.id==='string'?data.message.id:null;
+  if(!result.ok || data.sent!==true) {
     await ledger({action:'result',key:reservation.key,status:'failed'}).catch(()=>{});
-    return res.status(502).json({error:'O WhatsApp recusou a chamada. Confira o remetente, o destinatário e o modelo aprovado na Meta.'});
+    const errors={401:'Whapi.Cloud desconectado ou token inválido. Confira o canal remetente.',402:'O limite gratuito do Whapi.Cloud foi atingido.',403:'O Whapi.Cloud não autorizou este destinatário.',429:'O Whapi.Cloud recebeu muitas chamadas. Aguarde antes de uma nova chamada.'};
+    return res.status(502).json({error:errors[result.status] || 'O Whapi.Cloud não confirmou o envio. Confira a conexão e o número do destinatário.'});
   }
   try {await ledger({action:'result',key:reservation.key,status:'submitted',messageId});}
-  catch {return res.status(202).json({status:'submitted',messageId,warning:'A Meta aceitou a chamada, mas o registro final ficou pendente. Não repita o envio.'});}
+  catch {return res.status(202).json({status:'submitted',messageId,warning:'A API aceitou a chamada, mas o registro final ficou pendente. Não repita o envio.'});}
   return res.status(200).json({status:'submitted',messageId});
 }

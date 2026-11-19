@@ -1,28 +1,21 @@
-# Chamada real para a balança
+# Chamada para a balança pelo Whapi.Cloud
 
-O botão chama diretamente a API oficial da Meta. Não abre o WhatsApp Web. O código permanece desativado até a configuração do remetente.
+1. No Whapi.Cloud, conecte o WhatsApp remetente por QR Code e finalize o assistente. Para enviar texto, deixe webhooks, downloads automáticos e proxy desativados/vazios.
+2. No painel do canal, copie o API Token. Não envie o token na conversa nem inclua em capturas de tela.
+3. Na Vercel, projeto lgpd-site, abra Settings → Environment Variables, selecione Production e salve:
 
-Na conta WhatsApp Business Platform, conecte o número remetente e aprove um modelo de utilidade chamado `chamada_balanca`, idioma Português (Brasil), com parâmetros posicionais no corpo:
-
-> Olá, {{1}}. O caminhão de placa {{2}} está sendo chamado para a {{3}}. Dirija-se à balança, por favor.
-
-Parâmetros: nome do motorista, placa e `pesagem inicial` ou `pesagem final`. A classificação e aprovação dependem da Meta.
-
-Configure na Vercel, em **Settings → Environment Variables**, para Production:
-
-| Variável | Conteúdo |
+| Nome | Valor |
 | --- | --- |
-| WHATSAPP_ACCESS_TOKEN | Token privado da conta com permissão de envio |
-| WHATSAPP_PHONE_NUMBER_ID | ID do número remetente, não o telefone digitado |
-| WHATSAPP_TEMPLATE_NAME | chamada_balanca, após aprovação |
-| WHATSAPP_TEMPLATE_LANGUAGE | pt_BR |
-| WHATSAPP_ALLOWED_RECIPIENTS | Telefones autorizados nesta demonstração, separados por vírgulas, com 55 e DDD |
-| WHATSAPP_API_VERSION | v27.0 |
+| WHAPI_TOKEN | API Token do canal conectado, como Secret/Sensitive |
+| WHATSAPP_ALLOWED_RECIPIENTS | Telefones dos destinatários autorizados, separados por vírgula, com 55 e DDD, somente números |
 
-Marque o token como Sensitive. Nunca coloque o token em HTML, JavaScript do navegador, repositório ou conversa. Refaça o deployment após salvar as variáveis.
+4. Refaça o deployment após salvar as variáveis. As credenciais do banco já configuradas permanecem necessárias.
+5. No cadastro do veículo, preencha o WhatsApp do motorista com DDD. Na etapa Aguardando no Pátio ou Carregamento ou Descarga, clique em Chamar para a balança, confira o telefone e confirme Enviar chamada.
 
-O banco limita a demonstração a 100 tentativas, inclusive falhas e envios de resultado incerto. O limite não reinicia com recarga ou deployment. Cada veículo só recebe uma chamada por entrada na etapa. Repetir o clique não dispara novamente a mesma chamada. O destinatário deve estar na lista autorizada e no cadastro atual do veículo.
+Mensagem enviada:
 
-No site, informe o WhatsApp no cadastro e use **Chamar para a balança** em Aguardando no Pátio ou Carregamento ou Descarga. Confira os dados e clique em **Enviar chamada**. O envio não movimenta o cartão.
+> Olá, [motorista]. O caminhão de placa [placa] está sendo chamado para a [pesagem inicial/final]. Dirija-se à balança, por favor.
 
-O retorno de um ID pela Meta confirma aceitação para envio; não comprova entrega ou leitura. Nenhuma mensagem real deve ser anunciada como entregue sem essa confirmação. O projeto não ativa plano pago nem compra pacotes automaticamente. O teste inicial deve ser feito com o próprio número antes de chamar um motorista autorizado.
+O banco limita a demonstração a 100 tentativas, inclusive falhas e resultados incertos. O limite não reinicia com recarga ou deployment. Repetir o clique não dispara novamente a mesma chamada por veículo/entrada na etapa. Não há reenvio automático após falha ou timeout.
+
+A resposta positiva da API confirma aceitação do envio; não comprova entrega ou leitura. A chamada não movimenta o cartão. Webhooks de recebimento e entrega não estão configurados. Nenhuma assinatura ou compra é ativada pelo site. O Sandbox do fornecedor tem limites próprios, incluindo até 5 conversas por mês e 150 mensagens por dia; confira os limites atuais no painel.
