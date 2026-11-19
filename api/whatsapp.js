@@ -4,10 +4,9 @@ export default async function handler(req,res) {
   res.setHeader('Cache-Control','no-store');
   res.setHeader('X-Content-Type-Options','nosniff');
   const env=process.env;
-  const allowed=(env.WHATSAPP_ALLOWED_RECIPIENTS || '').split(',').map(s=>s.trim()).filter(s=>PHONE.test(s));
-  const configured=Boolean(env.WHAPI_TOKEN && allowed.length && env.SUPABASE_URL && env.SUPABASE_BACKEND_TOKEN);
+  const configured=Boolean(env.WHAPI_TOKEN && env.SUPABASE_URL && env.SUPABASE_BACKEND_TOKEN);
   if(req.method==='GET') {
-    if(!configured) return res.status(200).json({configured:false,limit:100,message:'Envio indisponível: configure a conexão do Whapi.Cloud e os destinatários autorizados.'});
+    if(!configured) return res.status(200).json({configured:false,limit:100,message:'Envio indisponível: configure a conexão do Whapi.Cloud.'});
     try {
       const check=await fetch('https://gate.whapi.cloud/health',{headers:{Authorization:'Bearer '+env.WHAPI_TOKEN,Accept:'application/json'},signal:AbortSignal.timeout(8000)});
       const health=await check.json();
@@ -23,7 +22,6 @@ export default async function handler(req,res) {
   let body=req.body;
   try {if(typeof body==='string') body=JSON.parse(body);} catch {return res.status(400).json({error:'Conteúdo inválido.'});}
   if(!body || !ID.test(body.recordId || '') || !PHONE.test(body.phone || '') || typeof body.stageAt!=='string' || body.stageAt.length>40) return res.status(400).json({error:'Confira o veículo e o WhatsApp com DDD.'});
-  if(!allowed.includes(body.phone)) return res.status(403).json({error:'Este número não foi autorizado para a demonstração.'});
   const ledger=async(data)=>{
     const result=await fetch(env.SUPABASE_URL.replace(/\/$/,'')+'/functions/v1/patio-whatsapp',{method:'POST',headers:{'Content-Type':'application/json','x-patio-backend-token':env.SUPABASE_BACKEND_TOKEN},body:JSON.stringify(data),signal:AbortSignal.timeout(12000)});
     const value=await result.json();
