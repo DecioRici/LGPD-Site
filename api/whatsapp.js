@@ -8,11 +8,14 @@ export default async function handler(req,res) {
   if(req.method==='GET') {
     if(!configured) return res.status(200).json({configured:false,limit:100,message:'Envio indisponível: configure a conexão do Whapi.Cloud.'});
     try {
-      const check=await fetch('https://gate.whapi.cloud/health',{headers:{Authorization:'Bearer '+env.WHAPI_TOKEN,Accept:'application/json'},signal:AbortSignal.timeout(8000)});
+      const check=await fetch('https://gate.whapi.cloud/health',{headers:{Authorization:'Bearer '+env.WHAPI_TOKEN,Accept:'application/json'},signal:AbortSignal.timeout(20000)});
       const health=await check.json();
       const connected=check.ok && health.status?.text==='AUTH';
       return res.status(200).json({configured:connected,limit:100,message:connected?'WhatsApp conectado para envio direto.':'O Whapi.Cloud não confirmou a conexão. Confira o token e conecte o WhatsApp no painel do canal.'});
-    } catch {return res.status(503).json({error:'Não foi possível verificar a conexão do Whapi.Cloud. Tente novamente.'});}
+    } catch(error) {
+      console.warn('whapi_health_failed', {name:error?.name,code:error?.cause?.code || error?.code || 'UNKNOWN'});
+      return res.status(503).json({error:error?.name==='TimeoutError'?'O Whapi.Cloud não respondeu à verificação em 20 segundos. Tente novamente.':'Não foi possível verificar a conexão do Whapi.Cloud. Tente novamente.'});
+    }
   }
   if(req.method!=='POST') return res.status(405).json({error:'Método não permitido.'});
   let sameOrigin=false;
@@ -42,7 +45,7 @@ export default async function handler(req,res) {
     result=await fetch('https://gate.whapi.cloud/messages/text',{
       method:'POST',headers:{Authorization:'Bearer '+env.WHAPI_TOKEN,'Content-Type':'application/json',Accept:'application/json'},
       body:JSON.stringify({to:body.phone,body:'Olá, '+reservation.driver+'. O caminhão de placa '+reservation.plate+' está sendo chamado para a '+weighing+'. Dirija-se à balança, por favor.'}),
-      signal:AbortSignal.timeout(12000)
+      signal:AbortSignal.timeout(20000)
     });
     data=await result.json();
   } catch {

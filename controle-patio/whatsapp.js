@@ -24,7 +24,7 @@ window.PatioWhatsApp=(()=>{
     modal.showModal();
     if(!phone) {status.textContent='Edite o cadastro e informe o WhatsApp do motorista com DDD.';return;}
     try {
-      const response=await fetch('/api/whatsapp',{cache:'no-store',signal:AbortSignal.timeout(15000)});
+      const response=await fetch('/api/whatsapp',{cache:'no-store',signal:AbortSignal.timeout(30000)});
       if(!response.ok) throw new Error();
       const data=await response.json();
       if(current!==generation || !modal.open) return;
@@ -43,7 +43,7 @@ window.PatioWhatsApp=(()=>{
     busy=true;send.disabled=true;send.textContent='Enviando…';
     status.textContent='Enviando a chamada ao WhatsApp…';
     try {
-      const response=await fetch('/api/whatsapp',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify(pending),signal:AbortSignal.timeout(45000)});
+      const response=await fetch('/api/whatsapp',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify(pending),signal:AbortSignal.timeout(60000)});
       const data=await response.json();
       if(!response.ok) throw new Error(data.error || 'Falha no envio.');
       status.textContent=data.warning || (data.duplicate?'Esta chamada já foi aceita pela API. O envio não foi repetido.':'Chamada aceita pela API para envio. Isso ainda não confirma a entrega ao motorista.');
