@@ -28,7 +28,7 @@ window.PatioWhatsApp=(()=>{
       if(!response.ok) throw new Error();
       const data=await response.json();
       if(current!==generation || !modal.open) return;
-      if(!data.configured) {status.textContent=data.message || 'O número remetente ainda não foi conectado.';return;}
+      if(!data.configured) {status.textContent=data.message || 'A conexão do Whapi.Cloud ainda não foi configurada.';return;}
       pending={recordId:record.id,phone,stageAt:record.stageEnteredAt};
       status.textContent='Envio direto para o motorista. Limite da demonstração: 100 tentativas.';
       send.disabled=false;
@@ -46,7 +46,7 @@ window.PatioWhatsApp=(()=>{
       const response=await fetch('/api/whatsapp',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify(pending),signal:AbortSignal.timeout(45000)});
       const data=await response.json();
       if(!response.ok) throw new Error(data.error || 'Falha no envio.');
-      status.textContent=data.warning || (data.duplicate?'Esta chamada já foi aceita pela Meta. O envio não foi repetido.':'Chamada aceita pela Meta para envio. Isso ainda não confirma a entrega ao motorista.');
+      status.textContent=data.warning || (data.duplicate?'Esta chamada já foi aceita pela API. O envio não foi repetido.':'Chamada aceita pela API para envio. Isso ainda não confirma a entrega ao motorista.');
     } catch(error) {
       status.textContent=error.name==='TimeoutError'?'Resposta não recebida. Confira o WhatsApp antes de repetir a chamada.':error.message;
     } finally {busy=false;pending=null;send.textContent='Enviar chamada';}
